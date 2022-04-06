@@ -21,15 +21,24 @@ public:
 private:
     Ui::GenerateData *ui;
     QSerialPort *port;
+    QVector <QString> VPattern;
+    QByteArray Package_ch1;
+    QByteArray Package_ch2;
+    int sizeInfo_ch1;
+    int sizeInfo_ch2;
+
+
 
 private slots:
     void openPort();
     void closePort();
     void setRate_slot(int rate);
-//    void reset_Arduino();
-//    void writePort(QByteArray data);
+    void reset_Arduino();
+    void writePort(QByteArray data);
 //    QByteArray readPort();
     void debugTextEdit(bool status, QString debMSG);
+    void openPatternFile();
+    void generatePackage(int numChannel);
 
 };
 

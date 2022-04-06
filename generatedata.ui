@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>430</width>
-    <height>304</height>
+    <width>429</width>
+    <height>303</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
@@ -201,15 +201,15 @@
       </rect>
      </property>
      <property name="title">
-      <string>Control Panel</string>
+      <string/>
      </property>
      <widget class="QTextEdit" name="textEdit">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>60</y>
+        <y>40</y>
         <width>111</width>
-        <height>51</height>
+        <height>71</height>
        </rect>
       </property>
      </widget>
@@ -218,7 +218,7 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>130</y>
+       <y>120</y>
        <width>111</width>
        <height>25</height>
       </rect>
@@ -258,8 +258,8 @@
      <rect>
       <x>10</x>
       <y>240</y>
-      <width>291</width>
-      <height>17</height>
+      <width>354</width>
+      <height>21</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -329,7 +329,7 @@
        <x>124</x>
        <y>20</y>
        <width>107</width>
-       <height>74</height>
+       <height>90</height>
       </rect>
      </property>
      <property name="sizePolicy">
@@ -627,17 +627,17 @@
      <property name="title">
       <string>State Channel 1</string>
      </property>
-     <widget class="QWidget" name="layoutWidget_6">
+     <widget class="QWidget" name="layoutWidget3">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>20</y>
-        <width>110</width>
+        <x>9</x>
+        <y>21</y>
+        <width>91</width>
         <height>63</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="gridLayout_11">
-       <item row="0" column="0">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
         <layout class="QGridLayout" name="gridLayout_4">
          <item row="1" column="0">
           <widget class="QLabel" name="label_10">
@@ -717,7 +717,7 @@
          </item>
         </layout>
        </item>
-       <item row="1" column="0">
+       <item>
         <widget class="QProgressBar" name="progressBar_3">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -742,55 +742,118 @@
       </layout>
      </widget>
     </widget>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>4</x>
        <y>200</y>
-       <width>221</width>
-       <height>27</height>
+       <width>231</width>
+       <height>22</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_6">
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="label_16">
+        <property name="maximumSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::PreventContextMenu</enum>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
         <property name="text">
-         <string>Sending a signal:</string>
+         <string>File:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <item>
-         <widget class="QPushButton" name="push_start_send">
-          <property name="maximumSize">
-           <size>
-            <width>40</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>START</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="push_stop_send">
-          <property name="maximumSize">
-           <size>
-            <width>40</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>STOP</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QPushButton" name="push_download">
+        <property name="maximumSize">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Load</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>17</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>42</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Sending:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="push_start_send">
+        <property name="maximumSize">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>START</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="push_stop_send">
+        <property name="maximumSize">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>STOP</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
+    <zorder>layoutWidget</zorder>
+    <zorder>groupBox_8</zorder>
+    <zorder>groupBox_10</zorder>
+    <zorder>groupBox_4</zorder>
    </widget>
    <widget class="QGroupBox" name="groupBox_3">
     <property name="geometry">
@@ -816,17 +879,17 @@
     <property name="title">
      <string>State Channel 1</string>
     </property>
-    <widget class="QWidget" name="layoutWidget_2">
+    <widget class="QWidget" name="layoutWidget2">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>20</y>
+       <y>21</y>
        <width>91</width>
        <height>63</height>
       </rect>
      </property>
-     <layout class="QGridLayout" name="gridLayout_6">
-      <item row="0" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="1" column="1" colspan="2">
          <widget class="QLabel" name="label_rate_1">
@@ -906,7 +969,7 @@
         </item>
        </layout>
       </item>
-      <item row="1" column="0">
+      <item>
        <widget class="QProgressBar" name="progressBar_1">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -931,7 +994,7 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget19">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -942,7 +1005,7 @@
     </property>
     <layout class="QGridLayout" name="gridLayout_12"/>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget6">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -953,13 +1016,24 @@
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_2"/>
    </widget>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>2</width>
+      <height>2</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_7"/>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>430</width>
+     <width>429</width>
      <height>21</height>
     </rect>
    </property>
