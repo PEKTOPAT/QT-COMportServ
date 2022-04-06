@@ -23,13 +23,13 @@ private:
     QSerialPort *port;
 
 private slots:
-//    void openPort();
-//    void closePort();
-//    void setRate_slot(int rate);
+    void openPort();
+    void closePort();
+    void setRate_slot(int rate);
 //    void reset_Arduino();
 //    void writePort(QByteArray data);
 //    QByteArray readPort();
-//    void debugTextEdit(bool status, QString debMSG);
+    void debugTextEdit(bool status, QString debMSG);
 
 };
 
