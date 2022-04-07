@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QDebug>
 #include <QTime>
+#include <QMessageBox>
 
 //******************************************************************************
 
@@ -13,6 +14,13 @@ GenerateData::GenerateData(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->push_start_send->setDisabled(true);
+    ui->push_stop_send->setDisabled(true);
+    countByte_ch1 = 0;
+    countByte_ch2 = 0;
+    flagRecieve_ch1 = true;
+    flagRecieve_ch2 = true;
+    flagMain = false;
     int num_port = QSerialPortInfo::availablePorts().length();
     for(int i = 0; i < num_port; i++)
     {
@@ -32,7 +40,10 @@ GenerateData::GenerateData(QWidget *parent) :
     ui->comboBox_speed_2->addItem("4,8");
     ui->comboBox_speed_2->addItem("9,6");
 
-
+    ui->label_statusPort_1->setText("Down");
+    ui->label_statusPort_1->setStyleSheet("QLabel {font-weight: bold; color : red; }");
+    ui->label_statusPort_3->setText("Down");
+    ui->label_statusPort_3->setStyleSheet("QLabel {font-weight: bold; color : red; }");
 
     port->setDataBits(QSerialPort::Data8);
     port->setFlowControl(QSerialPort::NoFlowControl);
@@ -46,6 +57,9 @@ GenerateData::GenerateData(QWidget *parent) :
     connect(ui->comboBox_portSpeed, SIGNAL(currentIndexChanged(int)), this, SLOT(setRate_slot(int)));
     connect(ui->push_download, SIGNAL(clicked(bool)), this, SLOT(openPatternFile()));
     connect(ui->push_reset_arduin, SIGNAL(clicked(bool)), this, SLOT(reset_Arduino()));
+    connect(ui->push_start_send, SIGNAL(clicked(bool)), this, SLOT(sendPackage()));
+    connect(ui->push_stop_send, SIGNAL(clicked(bool)), this, SLOT(stopSendPackage()));
+    connect(port, SIGNAL(readyRead()), this, SLOT(readPort()));
 
 }
 
@@ -80,6 +94,8 @@ void GenerateData::openPort()
         ui->push_connect->setEnabled(false);
         ui->push_disconnect->setEnabled(true);
         ui->label_info->setText(ui->comboBox_port->currentText() +" @ "+ ui->comboBox_portSpeed->currentText());
+        ui->push_start_send->setEnabled(true);
+        ui->push_stop_send->setEnabled(true);
     }
     else debugTextEdit(false, "Port not open!");
 }
@@ -96,6 +112,23 @@ void GenerateData::closePort()
         ui->label_status->setStyleSheet("QLabel {font-weight: bold; color : red; }");
         ui->push_connect->setEnabled(true);
         ui->push_disconnect->setEnabled(false);
+        ui->checkBox_1->setEnabled(true);
+        ui->checkBox_2->setEnabled(true);
+        ui->push_start_send->setEnabled(true);
+        ui->comboBox_speed_1->setEnabled(true);
+        ui->comboBox_speed_2->setEnabled(true);
+        ui->label_statusPort_1->setText("Down");
+        ui->label_statusPort_1->setStyleSheet("QLabel {font-weight: bold; color : red; }");
+        ui->label_statusPort_3->setText("Down");
+        ui->label_statusPort_3->setStyleSheet("QLabel {font-weight: bold; color : red; }");
+        ui->progressBar_1->setValue(0);
+        ui->progressBar_3->setValue(0);
+        countByte_ch1 = 0;
+        countByte_ch2 = 0;
+        flagRecieve_ch1 = true;
+        flagRecieve_ch2 = true;
+        Package_ch1.clear();
+        Package_ch2.clear();
     }
     else return;
 }
@@ -125,14 +158,11 @@ void GenerateData::openPatternFile()
         QString line = in.readLine();
         VPattern[0].append(line);
     }
-    ui->push_start_send->setEnabled(true);
-    ui->push_stop_send->setEnabled(true);
     file.close();
-    qDebug() <<Package_ch1;
     return;
 }
 //******************************************************************************
-void GenerateData::generatePackage(int numChannel)
+void GenerateData::generatePackage()
 {
     if(VPattern.size() == 0) return;
     Package_ch1.clear();
@@ -148,7 +178,7 @@ void GenerateData::generatePackage(int numChannel)
             for(int i = 0; i < (VPattern[0].length())/sizeInfo_ch1; i++)
             {
                 Package_ch1.append(171);
-                Package_ch1.append(161);
+                Package_ch1.append(33);
                 Package_ch1.append(sizeInfo_ch1);
                 for(int j = 0; j < sizeInfo_ch1; j++)
                 {
@@ -161,7 +191,7 @@ void GenerateData::generatePackage(int numChannel)
             for(int i = 0; i < (VPattern[0].length())/sizeInfo_ch1; i++)
             {
                 Package_ch1.append(171);
-                Package_ch1.append(162);
+                Package_ch1.append(34);
                 Package_ch1.append(sizeInfo_ch1);
                 for(int j = 0; j < sizeInfo_ch1; j++)
                 {
@@ -174,7 +204,7 @@ void GenerateData::generatePackage(int numChannel)
             for(int i = 0; i < (VPattern[0].length())/sizeInfo_ch1; i++)
             {
                 Package_ch1.append(171);
-                Package_ch1.append(163);
+                Package_ch1.append(35);
                 Package_ch1.append(sizeInfo_ch1);
                 for(int j = 0; j < sizeInfo_ch1; j++)
                 {
@@ -187,45 +217,118 @@ void GenerateData::generatePackage(int numChannel)
     {
         if(ui->comboBox_speed_2->currentText() == "2,4")
         {
-            for(int i = 0; i < (VPattern[0].length())/sizeInfo_ch1; i++)
+            for(int i = 0; i < (VPattern[0].length())/sizeInfo_ch2; i++)
             {
-                Package_ch1.append(171);
-                Package_ch1.append(196);
-                Package_ch1.append(sizeInfo_ch1);
-                for(int j = 0; j < sizeInfo_ch1; j++)
+                Package_ch2.append(171);
+                Package_ch2.append(68);
+                Package_ch2.append(sizeInfo_ch2);
+                for(int j = 0; j < sizeInfo_ch2; j++)
                 {
-                    Package_ch2.append(convert.at(sizeInfo_ch1*i+j));
+                    Package_ch2.append(convert.at(sizeInfo_ch2*i+j));
                 }
             }
         }
         else if (ui->comboBox_speed_2->currentText() == "4,8")
         {
-            for(int i = 0; i < (VPattern[0].length())/sizeInfo_ch1; i++)
+            for(int i = 0; i < (VPattern[0].length())/sizeInfo_ch2; i++)
             {
-                Package_ch1.append(171);
-                Package_ch1.append(200);
-                Package_ch1.append(sizeInfo_ch1);
-                for(int j = 0; j < sizeInfo_ch1; j++)
+                Package_ch2.append(171);
+                Package_ch2.append(72);
+                Package_ch2.append(sizeInfo_ch2);
+                for(int j = 0; j < sizeInfo_ch2; j++)
                 {
-                    Package_ch2.append(convert.at(sizeInfo_ch1*i+j));
+                    Package_ch2.append(convert.at(sizeInfo_ch2*i+j));
                 }
             }
         }
         else if (ui->comboBox_speed_2->currentText() == "9,6")
         {
-            for(int i = 0; i < (VPattern[0].length())/sizeInfo_ch1; i++)
+            for(int i = 0; i < (VPattern[0].length())/sizeInfo_ch2; i++)
             {
-                Package_ch1.append(171);
-                Package_ch1.append(204);
-                Package_ch1.append(sizeInfo_ch1);
-                for(int j = 0; j < sizeInfo_ch1; j++)
+                Package_ch2.append(171);
+                Package_ch2.append(76);
+                Package_ch2.append(sizeInfo_ch2);
+                for(int j = 0; j < sizeInfo_ch2; j++)
                 {
-                    Package_ch2.append(convert.at(sizeInfo_ch1*i+j));
+                    Package_ch2.append(convert.at(sizeInfo_ch2*i+j));
                 }
             }
         }
-
     }
+}
+//******************************************************************************
+void GenerateData::sendPackage()
+{
+    if(VPattern.size() == 0)
+    {
+        QMessageBox::critical(this, "Error", "File not loaded!");
+        return;
+    }
+    generatePackage();
+    ui->checkBox_1->setEnabled(false);
+    ui->checkBox_2->setEnabled(false);
+    ui->push_start_send->setEnabled(false);
+    ui->comboBox_speed_1->setEnabled(false);
+    ui->comboBox_speed_2->setEnabled(false);
+    ui->push_download->setEnabled(false);
+    partPackage_ch1.clear();
+    partPackage_ch2.clear();
+    qDebug() << Package_ch1.size() << flagRecieve_ch1;
+    if(Package_ch1.size() != 0 && flagRecieve_ch1)
+    {
+        ui->label_statusPort_1->setText("Up");
+        ui->label_statusPort_1->setStyleSheet("QLabel {font-weight: bold; color : green; }");
+        for (int i = 0; i < 13; i++)
+        {
+            if(Package_ch1.size() == 13*countByte_ch1 + i)
+            {
+                countByte_ch1 = 0;
+                partPackage_ch1.append(Package_ch1.at(13*countByte_ch1 + i));
+            }
+            else partPackage_ch1.append(Package_ch1.at(13*countByte_ch1 + i));
+        }
+        writePort(partPackage_ch1);
+        countByte_ch1++;
+    }
+    if(Package_ch2.size() != 0 && flagRecieve_ch2)
+    {
+        ui->label_statusPort_3->setText("Up");
+        ui->label_statusPort_3->setStyleSheet("QLabel {font-weight: bold; color : green; }");
+        for (int i = 0; i < 13; i++)
+        {
+            if(Package_ch2.size() == 13*countByte_ch2 + i)
+            {
+                countByte_ch2 = 0;
+                partPackage_ch2.append(Package_ch2.at(13*countByte_ch2 + i));
+            }
+            else partPackage_ch2.append(Package_ch2.at(13*countByte_ch2 + i));
+        }
+        writePort(partPackage_ch2);
+        countByte_ch2++;
+    }
+    flagRecieve_ch1 = false;
+    flagRecieve_ch2 = false;
+}
+//******************************************************************************
+void GenerateData::stopSendPackage()
+{
+    ui->checkBox_1->setEnabled(true);
+    ui->checkBox_2->setEnabled(true);
+    ui->push_start_send->setEnabled(true);
+    ui->comboBox_speed_1->setEnabled(true);
+    ui->comboBox_speed_2->setEnabled(true);
+    ui->label_statusPort_1->setText("Down");
+    ui->label_statusPort_1->setStyleSheet("QLabel {font-weight: bold; color : red; }");
+    ui->label_statusPort_3->setText("Down");
+    ui->label_statusPort_3->setStyleSheet("QLabel {font-weight: bold; color : red; }");
+    ui->progressBar_1->setValue(0);
+    ui->progressBar_3->setValue(0);
+    countByte_ch1 = 0;
+    countByte_ch2 = 0;
+    flagRecieve_ch1 = true;
+    flagRecieve_ch2 = true;
+    Package_ch1.clear();
+    Package_ch2.clear();
 }
 //******************************************************************************
 void GenerateData::debugTextEdit(bool status, QString debMSG)
@@ -236,6 +339,7 @@ void GenerateData::debugTextEdit(bool status, QString debMSG)
 //******************************************************************************
 void GenerateData::writePort(QByteArray data)
 {
+
     port->write(data);
 }
 //******************************************************************************
@@ -247,11 +351,112 @@ void GenerateData::reset_Arduino()
     {
         writePort(msg);
         debugTextEdit(true, "Reset arduino");
+        ui->checkBox_1->setEnabled(true);
+        ui->checkBox_2->setEnabled(true);
+        ui->push_start_send->setEnabled(true);
+        ui->comboBox_speed_1->setEnabled(true);
+        ui->comboBox_speed_2->setEnabled(true);
+        ui->label_statusPort_1->setText("Down");
+        ui->label_statusPort_1->setStyleSheet("QLabel {font-weight: bold; color : red; }");
+        ui->label_statusPort_3->setText("Down");
+        ui->label_statusPort_3->setStyleSheet("QLabel {font-weight: bold; color : red; }");
+        ui->progressBar_1->setValue(0);
+        ui->progressBar_3->setValue(0);
+        countByte_ch1 = 0;
+        countByte_ch2 = 0;
+        flagRecieve_ch1 = true;
+        flagRecieve_ch2 = true;
+        Package_ch1.clear();
+        Package_ch2.clear();
     }
     else
     {
         debugTextEdit(false, "Reset err. No connect");
         return;
     }
+}
+//******************************************************************************
+void GenerateData::readPort()
+{
+    QByteArray data;
+    QByteArray transit;
+    if (port->bytesAvailable() == 0) return;
+    data = port->readAll();
+    for(int i = 0; i < data.size(); i++)
+    {
+        transit.clear();
+        transit.append(data[i]);
+        const QString tab = " ";
+        QString strData;
+        int intData = static_cast<quint8>(transit.at(0));
+        for (int i = 0;i < transit.size();i++)
+        {
+            strData = strData+QString("%1").arg(intData)+tab;
+        }
+        strData.resize(strData.length() - 1);
+
+        qDebug() << strData;
+
+        if(!flagMain && strData == "170")flagMain = true;
+        else if (flagMain)
+        {
+            if(strData == "71")
+            {
+                ui->progressBar_1->setValue(7);
+                flagMain = false;
+                flagRecieve_ch1 = true;
+            }
+            else if(strData == "70")
+            {
+                ui->progressBar_1->setValue(6);
+                flagMain = false;
+                flagRecieve_ch1 = true;
+            }
+            else if(strData == "69")
+            {
+                ui->progressBar_1->setValue(5);
+                flagMain = false;
+                flagRecieve_ch1 = true;
+            }
+            else if(strData == "68")
+            {
+                flagRecieve_ch1 = true;
+                sendPackage();
+                flagMain = false;
+                ui->progressBar_1->setValue(7);
+            }
+            else if(strData == "184")
+            {
+                ui->progressBar_3->setValue(7);
+                flagMain = false;
+                flagRecieve_ch2 = true;
+            }
+            else if(strData == "176")
+            {
+                ui->progressBar_3->setValue(6);
+                flagMain = false;
+                flagRecieve_ch2 = true;
+            }
+            else if(strData == "168")
+            {
+                ui->progressBar_3->setValue(5);
+                flagMain = false;
+                flagRecieve_ch2 = true;
+            }
+            else if(strData == "160")
+            {
+                flagRecieve_ch2 = true;
+                sendPackage();
+                flagMain = false;
+                ui->progressBar_3->setValue(7);
+            }
+        }
+        else
+        {
+            debugTextEdit(false, "Recieve err");
+            return;
+        }
+    }
+    return;
 }
 //******************************************************************************

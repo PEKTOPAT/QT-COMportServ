@@ -26,6 +26,13 @@ private:
     QByteArray Package_ch2;
     int sizeInfo_ch1;
     int sizeInfo_ch2;
+    QByteArray partPackage_ch1;
+    QByteArray partPackage_ch2;
+    int countByte_ch1;
+    int countByte_ch2;
+    bool flagMain;
+    bool flagRecieve_ch1;
+    bool flagRecieve_ch2;
 
 
 
@@ -35,11 +42,12 @@ private slots:
     void setRate_slot(int rate);
     void reset_Arduino();
     void writePort(QByteArray data);
-//    QByteArray readPort();
+    void readPort();
     void debugTextEdit(bool status, QString debMSG);
     void openPatternFile();
-    void generatePackage(int numChannel);
-
+    void generatePackage();
+    void sendPackage();
+    void stopSendPackage();
 };
 
 #endif // GENERATEDATA_H
