@@ -13,7 +13,7 @@ GenerateData::GenerateData(QWidget *parent) :
     ui(new Ui::GenerateData)
 {
     ui->setupUi(this);
-
+    setGeometry(250,250,435,360);
     ui->push_start_send->setDisabled(true);
     ui->push_stop_send->setDisabled(true);
     countByte_ch1 = 0;
@@ -28,10 +28,10 @@ GenerateData::GenerateData(QWidget *parent) :
     }
 
     port = new QSerialPort(this);
-    ui->comboBox_portSpeed->addItem("9600");
-    ui->comboBox_portSpeed->addItem("19200");
-    ui->comboBox_portSpeed->addItem("38400");
-    ui->comboBox_portSpeed->addItem("57600");
+//    ui->comboBox_portSpeed->addItem("9600");
+//    ui->comboBox_portSpeed->addItem("19200");
+//    ui->comboBox_portSpeed->addItem("38400");
+//    ui->comboBox_portSpeed->addItem("57600");
     ui->comboBox_portSpeed->addItem("115200");
     ui->comboBox_speed_1->addItem("2,4");
     ui->comboBox_speed_1->addItem("4,8");
@@ -49,6 +49,7 @@ GenerateData::GenerateData(QWidget *parent) :
     port->setFlowControl(QSerialPort::NoFlowControl);
     port->setParity(QSerialPort::NoParity);
     port->setStopBits(QSerialPort::OneStop);
+    port->setBaudRate(QSerialPort::Baud115200);
     //**********
     //connecting
     //**********
@@ -121,8 +122,6 @@ void GenerateData::closePort()
         ui->label_statusPort_1->setStyleSheet("QLabel {font-weight: bold; color : red; }");
         ui->label_statusPort_3->setText("Down");
         ui->label_statusPort_3->setStyleSheet("QLabel {font-weight: bold; color : red; }");
-        ui->progressBar_1->setValue(0);
-        ui->progressBar_3->setValue(0);
         countByte_ch1 = 0;
         countByte_ch2 = 0;
         flagRecieve_ch1 = true;
@@ -287,6 +286,7 @@ void GenerateData::sendPackage()
             }
             else partPackage_ch1.append(Package_ch1.at(13*countByte_ch1 + i));
         }
+        debugTextEdit(true, "Send on Ch1!");
         writePort(partPackage_ch1);
         countByte_ch1++;
     }
@@ -303,6 +303,7 @@ void GenerateData::sendPackage()
             }
             else partPackage_ch2.append(Package_ch2.at(13*countByte_ch2 + i));
         }
+        debugTextEdit(true, "Send on Ch2!");
         writePort(partPackage_ch2);
         countByte_ch2++;
     }
@@ -321,8 +322,6 @@ void GenerateData::stopSendPackage()
     ui->label_statusPort_1->setStyleSheet("QLabel {font-weight: bold; color : red; }");
     ui->label_statusPort_3->setText("Down");
     ui->label_statusPort_3->setStyleSheet("QLabel {font-weight: bold; color : red; }");
-    ui->progressBar_1->setValue(0);
-    ui->progressBar_3->setValue(0);
     countByte_ch1 = 0;
     countByte_ch2 = 0;
     flagRecieve_ch1 = true;
@@ -360,8 +359,6 @@ void GenerateData::reset_Arduino()
         ui->label_statusPort_1->setStyleSheet("QLabel {font-weight: bold; color : red; }");
         ui->label_statusPort_3->setText("Down");
         ui->label_statusPort_3->setStyleSheet("QLabel {font-weight: bold; color : red; }");
-        ui->progressBar_1->setValue(0);
-        ui->progressBar_3->setValue(0);
         countByte_ch1 = 0;
         countByte_ch2 = 0;
         flagRecieve_ch1 = true;
@@ -396,25 +393,23 @@ void GenerateData::readPort()
         strData.resize(strData.length() - 1);
 
         qDebug() << strData;
+        debugTextEdit(true, strData);
 
         if(!flagMain && strData == "170")flagMain = true;
         else if (flagMain)
         {
             if(strData == "71")
             {
-                ui->progressBar_1->setValue(7);
                 flagMain = false;
                 flagRecieve_ch1 = true;
             }
             else if(strData == "70")
             {
-                ui->progressBar_1->setValue(6);
                 flagMain = false;
                 flagRecieve_ch1 = true;
             }
             else if(strData == "69")
             {
-                ui->progressBar_1->setValue(5);
                 flagMain = false;
                 flagRecieve_ch1 = true;
             }
@@ -423,23 +418,19 @@ void GenerateData::readPort()
                 flagRecieve_ch1 = true;
                 sendPackage();
                 flagMain = false;
-                ui->progressBar_1->setValue(7);
             }
             else if(strData == "184")
             {
-                ui->progressBar_3->setValue(7);
                 flagMain = false;
                 flagRecieve_ch2 = true;
             }
             else if(strData == "176")
             {
-                ui->progressBar_3->setValue(6);
                 flagMain = false;
                 flagRecieve_ch2 = true;
             }
             else if(strData == "168")
             {
-                ui->progressBar_3->setValue(5);
                 flagMain = false;
                 flagRecieve_ch2 = true;
             }
@@ -448,7 +439,6 @@ void GenerateData::readPort()
                 flagRecieve_ch2 = true;
                 sendPackage();
                 flagMain = false;
-                ui->progressBar_3->setValue(7);
             }
         }
         else
