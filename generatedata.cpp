@@ -60,6 +60,7 @@ GenerateData::GenerateData(QWidget *parent) :
     connect(ui->push_reset_arduin, SIGNAL(clicked(bool)), this, SLOT(reset_Arduino()));
     connect(ui->push_start_send, SIGNAL(clicked(bool)), this, SLOT(sendPackage()));
     connect(ui->push_stop_send, SIGNAL(clicked(bool)), this, SLOT(stopSendPackage()));
+    connect(ui->push_clear_log, SIGNAL(clicked(bool)), this, SLOT(clear_Log()));
     connect(port, SIGNAL(readyRead()), this, SLOT(readPort()));
 
 }
@@ -342,6 +343,88 @@ void GenerateData::writePort(QByteArray data)
     port->write(data);
 }
 //******************************************************************************
+void GenerateData::readPort()
+{
+    QByteArray data;
+    QByteArray transit;
+    if (port->bytesAvailable() == 0) return;
+    data = port->readAll(); QString HEX;
+    for(int i = 0; i < data.size(); i++)
+    {
+        transit.clear();
+        transit.append(data[i]);
+        const QString tab = " ";
+        QString strData;
+        QString HEXmm = "0x";
+        int intData = static_cast<quint8>(transit.at(0));
+        for (int i = 0;i < transit.size();i++)
+        {
+            strData = strData+QString("%1").arg(intData)+tab;
+            HEX = QString("%1").arg(intData,0,16) + tab;
+            HEX = HEXmm + HEX.toUpper();
+        }
+        strData.resize(strData.length() - 1);
+        //qDebug() << strData;
+        //debugTextEdit(true, strData);
+        debugTextEdit(true, HEX);
+
+
+        if(!flagMain && strData == "170")flagMain = true;
+        else if (flagMain)
+        {
+            if(strData == "71")
+            {
+                flagMain = false;
+                flagRecieve_ch1 = true;
+            }
+            else if(strData == "70")
+            {
+                flagMain = false;
+                flagRecieve_ch1 = true;
+            }
+            else if(strData == "69")
+            {
+                flagMain = false;
+                flagRecieve_ch1 = true;
+            }
+            else if(strData == "68" || strData == "67" || strData == "66" || strData == "65" || strData == "64")
+            {
+                flagRecieve_ch1 = true;
+                sendPackage();
+                flagMain = false;
+            }
+            else if(strData == "184")
+            {
+                flagMain = false;
+                flagRecieve_ch2 = true;
+            }
+            else if(strData == "176")
+            {
+                flagMain = false;
+                flagRecieve_ch2 = true;
+            }
+            else if(strData == "168")
+            {
+                flagMain = false;
+                flagRecieve_ch2 = true;
+            }
+            else if(strData == "160" || strData == "152" || strData == "144" || strData == "136" || strData == "128")
+            {
+                flagRecieve_ch2 = true;
+                sendPackage();
+                flagMain = false;
+            }
+            else debugTextEdit(false, "Err read data!");
+        }
+        else
+        {
+            debugTextEdit(false, "Err recieve");
+            return;
+        }
+    }
+    return;
+}
+//******************************************************************************
 void GenerateData::reset_Arduino()
 {
     QByteArray msg;
@@ -373,80 +456,8 @@ void GenerateData::reset_Arduino()
     }
 }
 //******************************************************************************
-void GenerateData::readPort()
+void GenerateData::clear_Log()
 {
-    QByteArray data;
-    QByteArray transit;
-    if (port->bytesAvailable() == 0) return;
-    data = port->readAll();
-    for(int i = 0; i < data.size(); i++)
-    {
-        transit.clear();
-        transit.append(data[i]);
-        const QString tab = " ";
-        QString strData;
-        int intData = static_cast<quint8>(transit.at(0));
-        for (int i = 0;i < transit.size();i++)
-        {
-            strData = strData+QString("%1").arg(intData)+tab;
-        }
-        strData.resize(strData.length() - 1);
-
-        qDebug() << strData;
-        debugTextEdit(true, strData);
-
-        if(!flagMain && strData == "170")flagMain = true;
-        else if (flagMain)
-        {
-            if(strData == "71")
-            {
-                flagMain = false;
-                flagRecieve_ch1 = true;
-            }
-            else if(strData == "70")
-            {
-                flagMain = false;
-                flagRecieve_ch1 = true;
-            }
-            else if(strData == "69")
-            {
-                flagMain = false;
-                flagRecieve_ch1 = true;
-            }
-            else if(strData == "68")
-            {
-                flagRecieve_ch1 = true;
-                sendPackage();
-                flagMain = false;
-            }
-            else if(strData == "184")
-            {
-                flagMain = false;
-                flagRecieve_ch2 = true;
-            }
-            else if(strData == "176")
-            {
-                flagMain = false;
-                flagRecieve_ch2 = true;
-            }
-            else if(strData == "168")
-            {
-                flagMain = false;
-                flagRecieve_ch2 = true;
-            }
-            else if(strData == "160")
-            {
-                flagRecieve_ch2 = true;
-                sendPackage();
-                flagMain = false;
-            }
-        }
-        else
-        {
-            debugTextEdit(false, "Recieve err");
-            return;
-        }
-    }
-    return;
+    ui->textEdit->clear();
 }
 //******************************************************************************

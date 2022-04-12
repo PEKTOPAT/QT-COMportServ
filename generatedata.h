@@ -48,6 +48,7 @@ private slots:
     void generatePackage();
     void sendPackage();
     void stopSendPackage();
+    void clear_Log();
 };
 
 #endif // GENERATEDATA_H

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>408</width>
-    <height>345</height>
+    <width>436</width>
+    <height>346</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -986,7 +986,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="push_reset_arduin_2">
+            <widget class="QPushButton" name="push_clear_log">
              <property name="minimumSize">
               <size>
                <width>40</width>
@@ -1000,7 +1000,7 @@
               </size>
              </property>
              <property name="text">
-              <string>Reset</string>
+              <string>Clear</string>
              </property>
             </widget>
            </item>
@@ -1053,7 +1053,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>408</width>
+     <width>436</width>
      <height>20</height>
     </rect>
    </property>
