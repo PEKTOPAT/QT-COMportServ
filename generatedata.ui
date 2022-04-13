@@ -876,6 +876,12 @@
         </item>
         <item>
          <widget class="QLabel" name="label_info">
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -891,7 +897,7 @@
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>40</width>
+            <width>5</width>
             <height>20</height>
            </size>
           </property>
@@ -1042,11 +1048,7 @@
     </item>
    </layout>
    <zorder></zorder>
-   <zorder>groupBox</zorder>
-   <zorder>groupBox</zorder>
    <zorder></zorder>
-   <zorder>groupBox_3</zorder>
-   <zorder>groupBox_4</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

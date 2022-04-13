@@ -270,7 +270,6 @@ void GenerateData::sendPackage()
     ui->push_start_send->setEnabled(false);
     ui->comboBox_speed_1->setEnabled(false);
     ui->comboBox_speed_2->setEnabled(false);
-    ui->push_download->setEnabled(false);
     partPackage_ch1.clear();
     partPackage_ch2.clear();
     qDebug() << Package_ch1.size() << flagRecieve_ch1;
@@ -288,6 +287,17 @@ void GenerateData::sendPackage()
             else partPackage_ch1.append(Package_ch1.at(13*countByte_ch1 + i));
         }
         debugTextEdit(true, "Send on Ch1!");
+        //191919
+        QString HEX;
+        QString HEXmm = "0x";
+        for (int i = 0;i < partPackage_ch1.size();i++)
+        {
+            int intData = static_cast<quint8>(partPackage_ch1.at(i));
+            HEX = QString("%1").arg(intData,0,16);
+            HEX = HEXmm + HEX.toUpper();
+            ui->textEdit->append( " -> " + HEX);
+        }
+        //191919
         writePort(partPackage_ch1);
         countByte_ch1++;
     }
@@ -348,44 +358,55 @@ void GenerateData::readPort()
     QByteArray data;
     QByteArray transit;
     if (port->bytesAvailable() == 0) return;
-    data = port->readAll(); QString HEX;
+    data = port->readAll();
+    //191919
+    QString HEX;
+    //191919
     for(int i = 0; i < data.size(); i++)
     {
         transit.clear();
         transit.append(data[i]);
         const QString tab = " ";
         QString strData;
+        //19191
         QString HEXmm = "0x";
+        //191919
         int intData = static_cast<quint8>(transit.at(0));
         for (int i = 0;i < transit.size();i++)
         {
             strData = strData+QString("%1").arg(intData)+tab;
+            //191919
             HEX = QString("%1").arg(intData,0,16) + tab;
             HEX = HEXmm + HEX.toUpper();
+            //191919
         }
         strData.resize(strData.length() - 1);
         //qDebug() << strData;
         //debugTextEdit(true, strData);
+        //191919
         debugTextEdit(true, HEX);
+        //191919
 
 
         if(!flagMain && strData == "170")flagMain = true;
         else if (flagMain)
         {
             if(strData == "71")
-            {
-                flagMain = false;
+            { 
                 flagRecieve_ch1 = true;
+                flagMain = false;
             }
             else if(strData == "70")
             {
-                flagMain = false;
                 flagRecieve_ch1 = true;
+                sendPackage();
+                flagMain = false;
             }
             else if(strData == "69")
             {
-                flagMain = false;
                 flagRecieve_ch1 = true;
+                sendPackage();
+                flagMain = false;
             }
             else if(strData == "68" || strData == "67" || strData == "66" || strData == "65" || strData == "64")
             {
@@ -400,13 +421,15 @@ void GenerateData::readPort()
             }
             else if(strData == "176")
             {
-                flagMain = false;
                 flagRecieve_ch2 = true;
+                sendPackage();
+                flagMain = false;
             }
             else if(strData == "168")
             {
-                flagMain = false;
                 flagRecieve_ch2 = true;
+                sendPackage();
+                flagMain = false;
             }
             else if(strData == "160" || strData == "152" || strData == "144" || strData == "136" || strData == "128")
             {
@@ -414,7 +437,11 @@ void GenerateData::readPort()
                 sendPackage();
                 flagMain = false;
             }
-            else debugTextEdit(false, "Err read data!");
+            else
+            {
+                debugTextEdit(false, "Err read data!");
+                flagMain = false;
+            }
         }
         else
         {
