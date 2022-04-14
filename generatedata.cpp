@@ -22,6 +22,9 @@ GenerateData::GenerateData(QWidget *parent) :
     flagRecieve_ch2 = true;
     flagMain = false;
     flagStopReceive = false;
+    sizeInfo_ch1 = 20;
+    sizeInfo_ch2 = 20;
+    sizePackage = 23;
     int num_port = QSerialPortInfo::availablePorts().length();
     for(int i = 0; i < num_port; i++)
     {
@@ -129,6 +132,9 @@ void GenerateData::closePort()
         flagRecieve_ch2 = true;
         Package_ch1.clear();
         Package_ch2.clear();
+        sizeInfo_ch1 = 20;
+        sizeInfo_ch2 = 20;
+        sizePackage = 23;
     }
     else return;
 }
@@ -162,8 +168,6 @@ void GenerateData::generatePackage()
     if(Pattern.size() == 0) return;
     Package_ch1.clear();
     Package_ch2.clear();
-    sizeInfo_ch1 = 10;
-    sizeInfo_ch2 = 10;  
     QByteArray convert;
     convert = Pattern.toLocal8Bit();
     if(ui->checkBox_1->checkState())
@@ -274,14 +278,14 @@ void GenerateData::sendPackage()
     {
         ui->label_statusPort_1->setText("Up");
         ui->label_statusPort_1->setStyleSheet("QLabel {font-weight: bold; color : green; }");
-        for (int i = 0; i < 23; i++)
+        for (int i = 0; i < sizePackage; i++)
         {
-            if(Package_ch1.size() == 23*countByte_ch1 + i)
+            if(Package_ch1.size() == sizePackage*countByte_ch1 + i)
             {
                 countByte_ch1 = 0;
-                partPackage_ch1.append(Package_ch1.at(23*countByte_ch1 + i));
+                partPackage_ch1.append(Package_ch1.at(sizePackage*countByte_ch1 + i));
             }
-            else partPackage_ch1.append(Package_ch1.at(23*countByte_ch1 + i));
+            else partPackage_ch1.append(Package_ch1.at(sizePackage*countByte_ch1 + i));
         }
         debugTextEdit(true, "Send on Ch1!");
         //191919
@@ -302,14 +306,14 @@ void GenerateData::sendPackage()
     {
         ui->label_statusPort_3->setText("Up");
         ui->label_statusPort_3->setStyleSheet("QLabel {font-weight: bold; color : green; }");
-        for (int i = 0; i < 23; i++)
+        for (int i = 0; i < sizePackage; i++)
         {
-            if(Package_ch2.size() == 23*countByte_ch2 + i)
+            if(Package_ch2.size() == sizePackage*countByte_ch2 + i)
             {
                 countByte_ch2 = 0;
-                partPackage_ch2.append(Package_ch2.at(23*countByte_ch2 + i));
+                partPackage_ch2.append(Package_ch2.at(sizePackage*countByte_ch2 + i));
             }
-            else partPackage_ch2.append(Package_ch2.at(23*countByte_ch2 + i));
+            else partPackage_ch2.append(Package_ch2.at(sizePackage*countByte_ch2 + i));
         }
         debugTextEdit(true, "Send on Ch2!");
         writePort(partPackage_ch2);
@@ -321,6 +325,9 @@ void GenerateData::sendPackage()
 //******************************************************************************
 void GenerateData::stopSendPackage()
 {
+    sizeInfo_ch1 = 20;
+    sizeInfo_ch2 = 20;
+    sizePackage = 23;
     flagStopReceive = true;
     ui->checkBox_1->setEnabled(true);
     ui->checkBox_2->setEnabled(true);
@@ -398,6 +405,9 @@ void GenerateData::readPort()
             else if(strData == "65")
             {
                 flagRecieve_ch1 = true;
+                sizeInfo_ch1 = 10;
+                sizeInfo_ch2 = 10;
+                sizePackage = 13;
                 sendPackage();
                 flagMain = false;
             }
@@ -419,19 +429,20 @@ void GenerateData::readPort()
             else if(strData == "136")
             {
                 flagRecieve_ch2 = true;
+                sizeInfo_ch1 = 10;
+                sizeInfo_ch2 = 10;
+                sizePackage = 13;
                 sendPackage();
                 flagMain = false;
             }
             else if(strData == "152")
             {
                 flagRecieve_ch2 = true;
-                sendPackage();
                 flagMain = false;
             }
             else if(strData == "184")
             {
                 flagRecieve_ch2 = true;
-                sendPackage();
                 flagMain = false;
             }
             else
@@ -472,6 +483,9 @@ void GenerateData::reset_Arduino()
         flagRecieve_ch2 = true;
         Package_ch1.clear();
         Package_ch2.clear();
+        sizeInfo_ch1 = 20;
+        sizeInfo_ch2 = 20;
+        sizePackage = 23;
     }
     else
     {

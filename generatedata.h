@@ -34,6 +34,7 @@ private:
     bool flagRecieve_ch1;
     bool flagRecieve_ch2;
     bool flagStopReceive;
+    int sizePackage;
 
 
 
