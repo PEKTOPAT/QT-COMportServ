@@ -21,7 +21,7 @@ public:
 private:
     Ui::GenerateData *ui;
     QSerialPort *port;
-    QVector <QString> VPattern;
+    QString Pattern;
     QByteArray Package_ch1;
     QByteArray Package_ch2;
     int sizeInfo_ch1;
@@ -33,6 +33,8 @@ private:
     bool flagMain;
     bool flagRecieve_ch1;
     bool flagRecieve_ch2;
+    bool flagStopReceive;
+
 
 
 

@@ -21,12 +21,12 @@ GenerateData::GenerateData(QWidget *parent) :
     flagRecieve_ch1 = true;
     flagRecieve_ch2 = true;
     flagMain = false;
+    flagStopReceive = false;
     int num_port = QSerialPortInfo::availablePorts().length();
     for(int i = 0; i < num_port; i++)
     {
         ui->comboBox_port->addItem(QSerialPortInfo::availablePorts().at(i).portName());
     }
-
     port = new QSerialPort(this);
 //    ui->comboBox_portSpeed->addItem("9600");
 //    ui->comboBox_portSpeed->addItem("19200");
@@ -135,8 +135,7 @@ void GenerateData::closePort()
 //******************************************************************************
 void GenerateData::openPatternFile()
 {
-
-    VPattern.clear();
+    Pattern.clear();
     QString fileName = QFileDialog::getOpenFileName(this);
     if(fileName.isEmpty())
     {
@@ -151,31 +150,27 @@ void GenerateData::openPatternFile()
         return;
     }else debugTextEdit(true, "Control file load");
     QTextStream in(&file);
-    QString line = in.readLine();
-    VPattern.append(line);
     while(!in.atEnd())
     {
-        QString line = in.readLine();
-        VPattern[0].append(line);
+        Pattern.append(in.readLine());
     }
-    file.close();
     return;
 }
 //******************************************************************************
 void GenerateData::generatePackage()
 {
-    if(VPattern.size() == 0) return;
+    if(Pattern.size() == 0) return;
     Package_ch1.clear();
     Package_ch2.clear();
     sizeInfo_ch1 = 10;
-    sizeInfo_ch2 = 10;
+    sizeInfo_ch2 = 10;  
     QByteArray convert;
-    convert.append(VPattern.at(0));
+    convert = Pattern.toLocal8Bit();
     if(ui->checkBox_1->checkState())
     {
         if(ui->comboBox_speed_1->currentText() == "2,4")
         {
-            for(int i = 0; i < (VPattern[0].length())/sizeInfo_ch1; i++)
+            for(int i = 0; i < (Pattern.length())/sizeInfo_ch1; i++)
             {
                 Package_ch1.append(171);
                 Package_ch1.append(33);
@@ -183,12 +178,13 @@ void GenerateData::generatePackage()
                 for(int j = 0; j < sizeInfo_ch1; j++)
                 {
                     Package_ch1.append(convert.at(sizeInfo_ch1*i+j));
+
                 }
             }
         }
         else if (ui->comboBox_speed_1->currentText() == "4,8")
         {
-            for(int i = 0; i < (VPattern[0].length())/sizeInfo_ch1; i++)
+            for(int i = 0; i < (Pattern.length())/sizeInfo_ch1; i++)
             {
                 Package_ch1.append(171);
                 Package_ch1.append(34);
@@ -201,7 +197,7 @@ void GenerateData::generatePackage()
         }
         else if (ui->comboBox_speed_1->currentText() == "9,6")
         {
-            for(int i = 0; i < (VPattern[0].length())/sizeInfo_ch1; i++)
+            for(int i = 0; i < (Pattern.length())/sizeInfo_ch1; i++)
             {
                 Package_ch1.append(171);
                 Package_ch1.append(35);
@@ -217,7 +213,7 @@ void GenerateData::generatePackage()
     {
         if(ui->comboBox_speed_2->currentText() == "2,4")
         {
-            for(int i = 0; i < (VPattern[0].length())/sizeInfo_ch2; i++)
+            for(int i = 0; i < (Pattern.length())/sizeInfo_ch2; i++)
             {
                 Package_ch2.append(171);
                 Package_ch2.append(68);
@@ -230,7 +226,7 @@ void GenerateData::generatePackage()
         }
         else if (ui->comboBox_speed_2->currentText() == "4,8")
         {
-            for(int i = 0; i < (VPattern[0].length())/sizeInfo_ch2; i++)
+            for(int i = 0; i < (Pattern.length())/sizeInfo_ch2; i++)
             {
                 Package_ch2.append(171);
                 Package_ch2.append(72);
@@ -243,7 +239,7 @@ void GenerateData::generatePackage()
         }
         else if (ui->comboBox_speed_2->currentText() == "9,6")
         {
-            for(int i = 0; i < (VPattern[0].length())/sizeInfo_ch2; i++)
+            for(int i = 0; i < (Pattern.length())/sizeInfo_ch2; i++)
             {
                 Package_ch2.append(171);
                 Package_ch2.append(76);
@@ -259,7 +255,8 @@ void GenerateData::generatePackage()
 //******************************************************************************
 void GenerateData::sendPackage()
 {
-    if(VPattern.size() == 0)
+    flagStopReceive = false;
+    if(Pattern.size() == 0)
     {
         QMessageBox::critical(this, "Error", "File not loaded!");
         return;
@@ -272,7 +269,7 @@ void GenerateData::sendPackage()
     ui->comboBox_speed_2->setEnabled(false);
     partPackage_ch1.clear();
     partPackage_ch2.clear();
-    qDebug() << Package_ch1.size() << flagRecieve_ch1;
+    //qDebug() << Package_ch1.size() << flagRecieve_ch1;
     if(Package_ch1.size() != 0 && flagRecieve_ch1)
     {
         ui->label_statusPort_1->setText("Up");
@@ -324,6 +321,7 @@ void GenerateData::sendPackage()
 //******************************************************************************
 void GenerateData::stopSendPackage()
 {
+    flagStopReceive = true;
     ui->checkBox_1->setEnabled(true);
     ui->checkBox_2->setEnabled(true);
     ui->push_start_send->setEnabled(true);
@@ -355,6 +353,7 @@ void GenerateData::writePort(QByteArray data)
 //******************************************************************************
 void GenerateData::readPort()
 {
+    if(flagStopReceive) return;
     QByteArray data;
     QByteArray transit;
     if (port->bytesAvailable() == 0) return;
