@@ -274,14 +274,14 @@ void GenerateData::sendPackage()
     {
         ui->label_statusPort_1->setText("Up");
         ui->label_statusPort_1->setStyleSheet("QLabel {font-weight: bold; color : green; }");
-        for (int i = 0; i < 13; i++)
+        for (int i = 0; i < 23; i++)
         {
-            if(Package_ch1.size() == 13*countByte_ch1 + i)
+            if(Package_ch1.size() == 23*countByte_ch1 + i)
             {
                 countByte_ch1 = 0;
-                partPackage_ch1.append(Package_ch1.at(13*countByte_ch1 + i));
+                partPackage_ch1.append(Package_ch1.at(23*countByte_ch1 + i));
             }
-            else partPackage_ch1.append(Package_ch1.at(13*countByte_ch1 + i));
+            else partPackage_ch1.append(Package_ch1.at(23*countByte_ch1 + i));
         }
         debugTextEdit(true, "Send on Ch1!");
         //191919
@@ -302,14 +302,14 @@ void GenerateData::sendPackage()
     {
         ui->label_statusPort_3->setText("Up");
         ui->label_statusPort_3->setStyleSheet("QLabel {font-weight: bold; color : green; }");
-        for (int i = 0; i < 13; i++)
+        for (int i = 0; i < 23; i++)
         {
-            if(Package_ch2.size() == 13*countByte_ch2 + i)
+            if(Package_ch2.size() == 23*countByte_ch2 + i)
             {
                 countByte_ch2 = 0;
-                partPackage_ch2.append(Package_ch2.at(13*countByte_ch2 + i));
+                partPackage_ch2.append(Package_ch2.at(23*countByte_ch2 + i));
             }
-            else partPackage_ch2.append(Package_ch2.at(13*countByte_ch2 + i));
+            else partPackage_ch2.append(Package_ch2.at(23*countByte_ch2 + i));
         }
         debugTextEdit(true, "Send on Ch2!");
         writePort(partPackage_ch2);
@@ -390,47 +390,45 @@ void GenerateData::readPort()
         if(!flagMain && strData == "170")flagMain = true;
         else if (flagMain)
         {
-            if(strData == "71")
+            if(strData == "64")
             { 
                 flagRecieve_ch1 = true;
                 flagMain = false;
             }
-            else if(strData == "70")
+            else if(strData == "65")
             {
                 flagRecieve_ch1 = true;
                 sendPackage();
                 flagMain = false;
             }
-            else if(strData == "69")
+            else if(strData == "67")
             {
                 flagRecieve_ch1 = true;
+                flagMain = false;
+            }
+            else if(strData == "71")
+            {
+                flagRecieve_ch1 = true;
+                flagMain = false;
+            }
+            else if(strData == "128")
+            {
+                flagMain = false;
+                flagRecieve_ch2 = true;
+            }
+            else if(strData == "136")
+            {
+                flagRecieve_ch2 = true;
                 sendPackage();
                 flagMain = false;
             }
-            else if(strData == "68" || strData == "67" || strData == "66" || strData == "65" || strData == "64")
+            else if(strData == "152")
             {
-                flagRecieve_ch1 = true;
+                flagRecieve_ch2 = true;
                 sendPackage();
                 flagMain = false;
             }
             else if(strData == "184")
-            {
-                flagMain = false;
-                flagRecieve_ch2 = true;
-            }
-            else if(strData == "176")
-            {
-                flagRecieve_ch2 = true;
-                sendPackage();
-                flagMain = false;
-            }
-            else if(strData == "168")
-            {
-                flagRecieve_ch2 = true;
-                sendPackage();
-                flagMain = false;
-            }
-            else if(strData == "160" || strData == "152" || strData == "144" || strData == "136" || strData == "128")
             {
                 flagRecieve_ch2 = true;
                 sendPackage();
