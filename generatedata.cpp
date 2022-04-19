@@ -288,17 +288,17 @@ void GenerateData::sendPackage()
             else partPackage_ch1.append(Package_ch1.at(sizePackage*countByte_ch1 + i));
         }
         debugTextEdit(true, "Send on Ch1!");
-        //191919
-        QString HEX;
-        QString HEXmm = "0x";
-        for (int i = 0;i < partPackage_ch1.size();i++)
-        {
-            int intData = static_cast<quint8>(partPackage_ch1.at(i));
-            HEX = QString("%1").arg(intData,0,16);
-            HEX = HEXmm + HEX.toUpper();
-            ui->textEdit->append( " -> " + HEX);
-        }
-        //191919
+//        //191919
+//        QString HEX;
+//        QString HEXmm = "0x";
+//        for (int i = 0;i < partPackage_ch1.size();i++)
+//        {
+//            int intData = static_cast<quint8>(partPackage_ch1.at(i));
+//            HEX = QString("%1").arg(intData,0,16);
+//            HEX = HEXmm + HEX.toUpper();
+//            ui->textEdit->append( " -> " + HEX);
+//        }
+//        //191919
         writePort(partPackage_ch1);
         countByte_ch1++;
     }
@@ -321,6 +321,9 @@ void GenerateData::sendPackage()
     }
     flagRecieve_ch1 = false;
     flagRecieve_ch2 = false;
+    sizeInfo_ch1 = 15;
+    sizeInfo_ch2 = 15;
+    sizePackage = 18;
 }
 //******************************************************************************
 void GenerateData::stopSendPackage()
@@ -390,7 +393,6 @@ void GenerateData::readPort()
         //qDebug() << strData;
         //debugTextEdit(true, strData);
         //191919
-        debugTextEdit(true, HEX);
         //191919
 
 
@@ -399,60 +401,87 @@ void GenerateData::readPort()
         {
             if(strData == "64")
             { 
-                flagRecieve_ch1 = true;
                 flagMain = false;
             }
             else if(strData == "65")
             {
                 flagRecieve_ch1 = true;
-                sizeInfo_ch1 = 10;
-                sizeInfo_ch2 = 10;
-                sizePackage = 13;
                 sendPackage();
                 flagMain = false;
             }
             else if(strData == "67")
             {
-                flagRecieve_ch1 = true;
                 flagMain = false;
             }
             else if(strData == "71")
             {
-                flagRecieve_ch1 = true;
                 flagMain = false;
             }
             else if(strData == "128")
             {
                 flagMain = false;
-                flagRecieve_ch2 = true;
             }
             else if(strData == "136")
             {
                 flagRecieve_ch2 = true;
-                sizeInfo_ch1 = 10;
-                sizeInfo_ch2 = 10;
-                sizePackage = 13;
                 sendPackage();
                 flagMain = false;
             }
             else if(strData == "152")
             {
-                flagRecieve_ch2 = true;
                 flagMain = false;
             }
             else if(strData == "184")
             {
+                flagMain = false;
+            }
+            else if(strData == "201")
+            {
+
+                flagRecieve_ch1 = true;
                 flagRecieve_ch2 = true;
+                sendPackage();
+                flagMain = false;
+            }
+            else if(strData == "217")
+            {
+                flagRecieve_ch1 = true;
+                sendPackage();
+                flagMain = false;
+            }
+            else if(strData == "249")
+            {
+                flagRecieve_ch1 = true;
+                sendPackage();
+                flagMain = false;
+            }
+            else if(strData == "203")
+            {
+
+                flagRecieve_ch2 = true;
+                sendPackage();
+                flagMain = false;
+            }
+            else if(strData == "207")
+            {
+                flagRecieve_ch2 = true;
+                sendPackage();
+                flagMain = false;
+            }
+            else if((strData == "219")||(strData == "223")||(strData == "251")||(strData == "255"))
+            {
                 flagMain = false;
             }
             else
             {
+                debugTextEdit(true, HEX);
                 debugTextEdit(false, "Err read data!");
                 flagMain = false;
             }
         }
         else
         {
+            debugTextEdit(true, HEX);
             debugTextEdit(false, "Err recieve");
             return;
         }
