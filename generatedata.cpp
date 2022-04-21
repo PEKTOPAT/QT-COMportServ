@@ -36,12 +36,12 @@ GenerateData::GenerateData(QWidget *parent) :
 //    ui->comboBox_portSpeed->addItem("38400");
 //    ui->comboBox_portSpeed->addItem("57600");
     ui->comboBox_portSpeed->addItem("115200");
+    ui->comboBox_speed_1->addItem("1,2");
     ui->comboBox_speed_1->addItem("2,4");
     ui->comboBox_speed_1->addItem("4,8");
-    ui->comboBox_speed_1->addItem("9,6");
+    ui->comboBox_speed_2->addItem("1,2");
     ui->comboBox_speed_2->addItem("2,4");
     ui->comboBox_speed_2->addItem("4,8");
-    ui->comboBox_speed_2->addItem("9,6");
 
     ui->label_statusPort_1->setText("Down");
     ui->label_statusPort_1->setStyleSheet("QLabel {font-weight: bold; color : red; }");
@@ -172,7 +172,7 @@ void GenerateData::generatePackage()
     convert = Pattern.toLocal8Bit();
     if(ui->checkBox_1->checkState())
     {
-        if(ui->comboBox_speed_1->currentText() == "2,4")
+        if(ui->comboBox_speed_1->currentText() == "1,2")
         {
             for(int i = 0; i < (Pattern.length())/sizeInfo_ch1; i++)
             {
@@ -186,7 +186,7 @@ void GenerateData::generatePackage()
                 }
             }
         }
-        else if (ui->comboBox_speed_1->currentText() == "4,8")
+        else if (ui->comboBox_speed_1->currentText() == "2,4")
         {
             for(int i = 0; i < (Pattern.length())/sizeInfo_ch1; i++)
             {
@@ -199,7 +199,7 @@ void GenerateData::generatePackage()
                 }
             }
         }
-        else if (ui->comboBox_speed_1->currentText() == "9,6")
+        else if (ui->comboBox_speed_1->currentText() == "4,8")
         {
             for(int i = 0; i < (Pattern.length())/sizeInfo_ch1; i++)
             {
@@ -215,7 +215,7 @@ void GenerateData::generatePackage()
     }
     if(ui->checkBox_2->checkState())
     {
-        if(ui->comboBox_speed_2->currentText() == "2,4")
+        if(ui->comboBox_speed_2->currentText() == "1,2")
         {
             for(int i = 0; i < (Pattern.length())/sizeInfo_ch2; i++)
             {
@@ -228,7 +228,7 @@ void GenerateData::generatePackage()
                 }
             }
         }
-        else if (ui->comboBox_speed_2->currentText() == "4,8")
+        else if (ui->comboBox_speed_2->currentText() == "2,4")
         {
             for(int i = 0; i < (Pattern.length())/sizeInfo_ch2; i++)
             {
@@ -241,7 +241,7 @@ void GenerateData::generatePackage()
                 }
             }
         }
-        else if (ui->comboBox_speed_2->currentText() == "9,6")
+        else if (ui->comboBox_speed_2->currentText() == "4,8")
         {
             for(int i = 0; i < (Pattern.length())/sizeInfo_ch2; i++)
             {
@@ -287,7 +287,7 @@ void GenerateData::sendPackage()
             }
             else partPackage_ch1.append(Package_ch1.at(sizePackage*countByte_ch1 + i));
         }
-        debugTextEdit(true, "Send on Ch1!");
+        //debugTextEdit(true, "Send on Ch1!");
 //        //191919
 //        QString HEX;
 //        QString HEXmm = "0x";
@@ -315,7 +315,7 @@ void GenerateData::sendPackage()
             }
             else partPackage_ch2.append(Package_ch2.at(sizePackage*countByte_ch2 + i));
         }
-        debugTextEdit(true, "Send on Ch2!");
+        //debugTextEdit(true, "Send on Ch2!");
         writePort(partPackage_ch2);
         countByte_ch2++;
     }
