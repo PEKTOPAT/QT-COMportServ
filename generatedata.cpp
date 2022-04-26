@@ -160,6 +160,7 @@ void GenerateData::openPatternFile()
     {
         Pattern.append(in.readLine());
     }
+    qDebug() << Pattern.size();
     return;
 }
 //******************************************************************************
@@ -182,7 +183,6 @@ void GenerateData::generatePackage()
                 for(int j = 0; j < sizeInfo_ch1; j++)
                 {
                     Package_ch1.append(convert.at(sizeInfo_ch1*i+j));
-
                 }
             }
         }
@@ -224,6 +224,7 @@ void GenerateData::generatePackage()
                 Package_ch2.append(sizeInfo_ch2);
                 for(int j = 0; j < sizeInfo_ch2; j++)
                 {
+                    qDebug() << sizeInfo_ch2*i+j;
                     Package_ch2.append(convert.at(sizeInfo_ch2*i+j));
                 }
             }

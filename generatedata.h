@@ -36,9 +36,6 @@ private:
     bool flagStopReceive;
     int sizePackage;
 
-
-
-
 private slots:
     void openPort();
     void closePort();
