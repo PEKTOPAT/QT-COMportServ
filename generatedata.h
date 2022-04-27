@@ -26,10 +26,6 @@ private:
     QByteArray Package_ch2;
     int sizeInfo_ch1;
     int sizeInfo_ch2;
-    QByteArray partPackage_ch1;
-    QByteArray partPackage_ch2;
-    int countByte_ch1;
-    int countByte_ch2;
     int countByte_CH1;
     int countByte_CH2;
     bool flagMain;

@@ -16,8 +16,6 @@ GenerateData::GenerateData(QWidget *parent) :
     setGeometry(250,250,435,360);
     ui->push_start_send->setDisabled(true);
     ui->push_stop_send->setDisabled(true);
-    countByte_ch1 = 0;
-    countByte_ch2 = 0;
     flagRecieve_ch1 = true;
     flagRecieve_ch2 = true;
     flagMain = false;
@@ -33,10 +31,10 @@ GenerateData::GenerateData(QWidget *parent) :
         ui->comboBox_port->addItem(QSerialPortInfo::availablePorts().at(i).portName());
     }
     port = new QSerialPort(this);
-//    ui->comboBox_portSpeed->addItem("9600");
-//    ui->comboBox_portSpeed->addItem("19200");
-//    ui->comboBox_portSpeed->addItem("38400");
-//    ui->comboBox_portSpeed->addItem("57600");
+    //    ui->comboBox_portSpeed->addItem("9600");
+    //    ui->comboBox_portSpeed->addItem("19200");
+    //    ui->comboBox_portSpeed->addItem("38400");
+    //    ui->comboBox_portSpeed->addItem("57600");
     ui->comboBox_portSpeed->addItem("115200");
     ui->comboBox_speed_1->addItem("1,2");
     ui->comboBox_speed_1->addItem("2,4");
@@ -128,8 +126,6 @@ void GenerateData::closePort()
         ui->label_statusPort_1->setStyleSheet("QLabel {font-weight: bold; color : red; }");
         ui->label_statusPort_3->setText("Down");
         ui->label_statusPort_3->setStyleSheet("QLabel {font-weight: bold; color : red; }");
-        countByte_ch1 = 0;
-        countByte_ch2 = 0;
         flagRecieve_ch1 = true;
         flagRecieve_ch2 = true;
         Package_ch1.clear();
@@ -176,40 +172,38 @@ void GenerateData::generatePackage()
     {
         if(ui->comboBox_speed_1->currentText() == "1,2")
         {
-                Package_ch1.append(171);
-                Package_ch1.append(33);
-                Package_ch1.append(sizeInfo_ch1);
-                for(int j = 0; j < sizeInfo_ch1; j++)
-                {
-                    Package_ch1.append(convert.at(countByte_CH1));
-                    countByte_CH1++;
-                    if(countByte_CH1 > Pattern.length()) countByte_CH1 = 0;
-                }
+            Package_ch1.append(171);
+            Package_ch1.append(33);
+            Package_ch1.append(sizeInfo_ch1);
+            for(int j = 0; j < sizeInfo_ch1; j++)
+            {
+                Package_ch1.append(convert.at(countByte_CH1));
+                countByte_CH1++;
+                if(countByte_CH1 > Pattern.length()) countByte_CH1 = 0;
+            }
         }
         else if (ui->comboBox_speed_1->currentText() == "2,4")
         {
-            for(int i = 0; i < (Pattern.length())/sizeInfo_ch1; i++)
+            Package_ch1.append(171);
+            Package_ch1.append(34);
+            Package_ch1.append(sizeInfo_ch1);
+            for(int j = 0; j < sizeInfo_ch1; j++)
             {
-                Package_ch1.append(171);
-                Package_ch1.append(34);
-                Package_ch1.append(sizeInfo_ch1);
-                for(int j = 0; j < sizeInfo_ch1; j++)
-                {
-                    Package_ch1.append(convert.at(sizeInfo_ch1*i+j));
-                }
+                Package_ch1.append(convert.at(countByte_CH1));
+                countByte_CH1++;
+                if(countByte_CH1 > Pattern.length()) countByte_CH1 = 0;
             }
         }
         else if (ui->comboBox_speed_1->currentText() == "4,8")
         {
-            for(int i = 0; i < (Pattern.length())/sizeInfo_ch1; i++)
+            Package_ch1.append(171);
+            Package_ch1.append(35);
+            Package_ch1.append(sizeInfo_ch1);
+            for(int j = 0; j < sizeInfo_ch1; j++)
             {
-                Package_ch1.append(171);
-                Package_ch1.append(35);
-                Package_ch1.append(sizeInfo_ch1);
-                for(int j = 0; j < sizeInfo_ch1; j++)
-                {
-                    Package_ch1.append(convert.at(sizeInfo_ch1*i+j));
-                }
+                Package_ch1.append(convert.at(countByte_CH1));
+                countByte_CH1++;
+                if(countByte_CH1 > Pattern.length()) countByte_CH1 = 0;
             }
         }
     }
@@ -217,40 +211,38 @@ void GenerateData::generatePackage()
     {
         if(ui->comboBox_speed_2->currentText() == "1,2")
         {
-                Package_ch2.append(171);
-                Package_ch2.append(68);
-                Package_ch2.append(sizeInfo_ch2);
-                for(int j = 0; j < sizeInfo_ch2; j++)
-                {
-                    Package_ch2.append(convert.at(countByte_CH2));
-                    countByte_CH2++;
-                    if(countByte_CH2 == Pattern.length()) countByte_CH2 = 0;
-                }
+            Package_ch2.append(171);
+            Package_ch2.append(68);
+            Package_ch2.append(sizeInfo_ch2);
+            for(int j = 0; j < sizeInfo_ch2; j++)
+            {
+                Package_ch2.append(convert.at(countByte_CH2));
+                countByte_CH2++;
+                if(countByte_CH2 == Pattern.length()) countByte_CH2 = 0;
+            }
         }
         else if (ui->comboBox_speed_2->currentText() == "2,4")
         {
-            for(int i = 0; i < (Pattern.length())/sizeInfo_ch2; i++)
+            Package_ch2.append(171);
+            Package_ch2.append(72);
+            Package_ch2.append(sizeInfo_ch2);
+            for(int j = 0; j < sizeInfo_ch2; j++)
             {
-                Package_ch2.append(171);
-                Package_ch2.append(72);
-                Package_ch2.append(sizeInfo_ch2);
-                for(int j = 0; j < sizeInfo_ch2; j++)
-                {
-                    Package_ch2.append(convert.at(sizeInfo_ch2*i+j));
-                }
+                Package_ch2.append(convert.at(countByte_CH2));
+                countByte_CH2++;
+                if(countByte_CH2 == Pattern.length()) countByte_CH2 = 0;
             }
         }
         else if (ui->comboBox_speed_2->currentText() == "4,8")
         {
-            for(int i = 0; i < (Pattern.length())/sizeInfo_ch2; i++)
+            Package_ch2.append(171);
+            Package_ch2.append(76);
+            Package_ch2.append(sizeInfo_ch2);
+            for(int j = 0; j < sizeInfo_ch2; j++)
             {
-                Package_ch2.append(171);
-                Package_ch2.append(76);
-                Package_ch2.append(sizeInfo_ch2);
-                for(int j = 0; j < sizeInfo_ch2; j++)
-                {
-                    Package_ch2.append(convert.at(sizeInfo_ch2*i+j));
-                }
+                Package_ch2.append(convert.at(countByte_CH2));
+                countByte_CH2++;
+                if(countByte_CH2 == Pattern.length()) countByte_CH2 = 0;
             }
         }
     }
@@ -270,54 +262,17 @@ void GenerateData::sendPackage()
     ui->push_start_send->setEnabled(false);
     ui->comboBox_speed_1->setEnabled(false);
     ui->comboBox_speed_2->setEnabled(false);
-    partPackage_ch1.clear();
-    partPackage_ch2.clear();
-    //qDebug() << Package_ch1.size() << flagRecieve_ch1;
     if(Package_ch1.size() != 0 && flagRecieve_ch1)
     {
         ui->label_statusPort_1->setText("Up");
         ui->label_statusPort_1->setStyleSheet("QLabel {font-weight: bold; color : green; }");
-//        for (int i = 0; i < sizePackage; i++)
-//        {
-//            if(Package_ch1.size() == sizePackage*countByte_ch1 + i)
-//            {
-//                countByte_ch1 = 0;
-//                partPackage_ch1.append(Package_ch1.at(sizePackage*countByte_ch1 + i));
-//            }
-//            else partPackage_ch1.append(Package_ch1.at(sizePackage*countByte_ch1 + i));
-//        }
-        //debugTextEdit(true, "Send on Ch1!");
-//        //191919
-//        QString HEX;
-//        QString HEXmm = "0x";
-//        for (int i = 0;i < partPackage_ch1.size();i++)
-//        {
-//            int intData = static_cast<quint8>(partPackage_ch1.at(i));
-//            HEX = QString("%1").arg(intData,0,16);
-//            HEX = HEXmm + HEX.toUpper();
-//            ui->textEdit->append( " -> " + HEX);
-//        }
-//        //191919
         writePort(Package_ch1);
-        countByte_ch1++;
     }
     if(Package_ch2.size() != 0 && flagRecieve_ch2)
     {
         ui->label_statusPort_3->setText("Up");
         ui->label_statusPort_3->setStyleSheet("QLabel {font-weight: bold; color : green; }");
-//        for (int i = 0; i < sizePackage; i++)
-//        {
-//            if(Package_ch2.size() == sizePackage*countByte_ch2 + i)
-//            {
-//                countByte_ch2 = 0;
-//                partPackage_ch2.append(Package_ch2.at(sizePackage*countByte_ch2 + i));
-//            }
-//            else partPackage_ch2.append(Package_ch2.at(sizePackage*countByte_ch2 + i));
-//        }
-        //debugTextEdit(true, "Send on Ch2!");
-        qDebug () << "__Deb" << Package_ch2;
         writePort(Package_ch2);
-        //countByte_ch2++;
     }
     flagRecieve_ch1 = false;
     flagRecieve_ch2 = false;
@@ -341,8 +296,6 @@ void GenerateData::stopSendPackage()
     ui->label_statusPort_1->setStyleSheet("QLabel {font-weight: bold; color : red; }");
     ui->label_statusPort_3->setText("Down");
     ui->label_statusPort_3->setStyleSheet("QLabel {font-weight: bold; color : red; }");
-    //countByte_ch1 = 0;
-    //countByte_ch2 = 0;
     flagRecieve_ch1 = true;
     flagRecieve_ch2 = true;
     Package_ch1.clear();
@@ -357,7 +310,6 @@ void GenerateData::debugTextEdit(bool status, QString debMSG)
 //******************************************************************************
 void GenerateData::writePort(QByteArray data)
 {
-
     port->write(data);
 }
 //******************************************************************************
@@ -368,39 +320,23 @@ void GenerateData::readPort()
     QByteArray transit;
     if (port->bytesAvailable() == 0) return;
     data = port->readAll();
-    //191919
-    QString HEX;
-    //191919
     for(int i = 0; i < data.size(); i++)
     {
         transit.clear();
         transit.append(data[i]);
         const QString tab = " ";
         QString strData;
-        //19191
-        QString HEXmm = "0x";
-        //191919
         int intData = static_cast<quint8>(transit.at(0));
         for (int i = 0;i < transit.size();i++)
         {
             strData = strData+QString("%1").arg(intData)+tab;
-            //191919
-            HEX = QString("%1").arg(intData,0,16) + tab;
-            HEX = HEXmm + HEX.toUpper();
-            //191919
         }
         strData.resize(strData.length() - 1);
-        //qDebug() << strData;
-        //debugTextEdit(true, strData);
-        //191919
-        //191919
-
-
         if(!flagMain && strData == "170")flagMain = true;
         else if (flagMain)
         {
             if(strData == "64")
-            { 
+            {
                 flagMain = false;
             }
             else if(strData == "65")
@@ -474,14 +410,12 @@ void GenerateData::readPort()
             }
             else
             {
-                debugTextEdit(true, HEX);
                 debugTextEdit(false, "Err read data!");
                 flagMain = false;
             }
         }
         else
         {
-            debugTextEdit(true, HEX);
             debugTextEdit(false, "Err recieve");
             return;
         }
@@ -506,8 +440,6 @@ void GenerateData::reset_Arduino()
         ui->label_statusPort_1->setStyleSheet("QLabel {font-weight: bold; color : red; }");
         ui->label_statusPort_3->setText("Down");
         ui->label_statusPort_3->setStyleSheet("QLabel {font-weight: bold; color : red; }");
-        countByte_ch1 = 0;
-        countByte_ch2 = 0;
         flagRecieve_ch1 = true;
         flagRecieve_ch2 = true;
         Package_ch1.clear();
