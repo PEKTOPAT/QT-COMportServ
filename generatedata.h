@@ -30,6 +30,8 @@ private:
     QByteArray partPackage_ch2;
     int countByte_ch1;
     int countByte_ch2;
+    int countByte_CH1;
+    int countByte_CH2;
     bool flagMain;
     bool flagRecieve_ch1;
     bool flagRecieve_ch2;
