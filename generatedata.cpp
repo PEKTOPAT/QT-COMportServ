@@ -25,6 +25,7 @@ GenerateData::GenerateData(QWidget *parent) :
     sizePackage = 23;
     countByte_CH1 = 0;
     countByte_CH2 = 0;
+    shiftFreq = 0;
     int num_port = QSerialPortInfo::availablePorts().length();
     for(int i = 0; i < num_port; i++)
     {
@@ -65,6 +66,7 @@ GenerateData::GenerateData(QWidget *parent) :
     connect(ui->push_stop_send, SIGNAL(clicked(bool)), this, SLOT(stopSendPackage()));
     connect(ui->push_clear_log, SIGNAL(clicked(bool)), this, SLOT(clear_Log()));
     connect(port, SIGNAL(readyRead()), this, SLOT(readPort()));
+    connect(ui->spinBox, SIGNAL(valueChanged(int)), this, SLOT(setShiftFreq(int)));
 
 }
 
@@ -158,6 +160,8 @@ void GenerateData::openPatternFile()
     {
         Pattern.append(in.readLine());
     }
+    //qDebug() << Pattern.size() << Pattern.at(0);
+    //qDebug() << Pattern.toLocal8Bit();
     return;
 }
 //******************************************************************************
@@ -174,6 +178,7 @@ void GenerateData::generatePackage()
         {
             Package_ch1.append(171);
             Package_ch1.append(33);
+            Package_ch1.append(shiftFreq);
             Package_ch1.append(sizeInfo_ch1);
             for(int j = 0; j < sizeInfo_ch1; j++)
             {
@@ -186,6 +191,7 @@ void GenerateData::generatePackage()
         {
             Package_ch1.append(171);
             Package_ch1.append(34);
+            Package_ch1.append(shiftFreq);
             Package_ch1.append(sizeInfo_ch1);
             for(int j = 0; j < sizeInfo_ch1; j++)
             {
@@ -198,6 +204,7 @@ void GenerateData::generatePackage()
         {
             Package_ch1.append(171);
             Package_ch1.append(35);
+            Package_ch1.append(shiftFreq);
             Package_ch1.append(sizeInfo_ch1);
             for(int j = 0; j < sizeInfo_ch1; j++)
             {
@@ -213,6 +220,7 @@ void GenerateData::generatePackage()
         {
             Package_ch2.append(171);
             Package_ch2.append(68);
+            Package_ch2.append(shiftFreq);
             Package_ch2.append(sizeInfo_ch2);
             for(int j = 0; j < sizeInfo_ch2; j++)
             {
@@ -225,6 +233,7 @@ void GenerateData::generatePackage()
         {
             Package_ch2.append(171);
             Package_ch2.append(72);
+            Package_ch2.append(shiftFreq);
             Package_ch2.append(sizeInfo_ch2);
             for(int j = 0; j < sizeInfo_ch2; j++)
             {
@@ -237,6 +246,7 @@ void GenerateData::generatePackage()
         {
             Package_ch2.append(171);
             Package_ch2.append(76);
+            Package_ch2.append(shiftFreq);
             Package_ch2.append(sizeInfo_ch2);
             for(int j = 0; j < sizeInfo_ch2; j++)
             {
@@ -460,3 +470,7 @@ void GenerateData::clear_Log()
     ui->textEdit->clear();
 }
 //******************************************************************************
+void GenerateData::setShiftFreq(int value)
+{
+    shiftFreq = value;
+}

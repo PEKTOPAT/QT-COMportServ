@@ -33,6 +33,7 @@ private:
     bool flagRecieve_ch2;
     bool flagStopReceive;
     int sizePackage;
+    short shiftFreq;
 
 private slots:
     void openPort();
@@ -47,6 +48,7 @@ private slots:
     void sendPackage();
     void stopSendPackage();
     void clear_Log();
+    void setShiftFreq(int value);
 };
 
 #endif // GENERATEDATA_H
