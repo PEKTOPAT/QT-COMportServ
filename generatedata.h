@@ -34,6 +34,7 @@ private:
     bool flagStopReceive;
     int sizePackage;
     short shiftFreq;
+    double correction_Freq;
 
 private slots:
     void openPort();
@@ -49,6 +50,7 @@ private slots:
     void stopSendPackage();
     void clear_Log();
     void setShiftFreq(int value);
+    void correctionFreq();
 };
 
 #endif // GENERATEDATA_H
