@@ -26,6 +26,7 @@ GenerateData::GenerateData(QWidget *parent) :
     countByte_CH1 = 0;
     countByte_CH2 = 0;
     shiftFreq = 0;
+    correction_Freq = 0;
     int num_port = QSerialPortInfo::availablePorts().length();
     for(int i = 0; i < num_port; i++)
     {
@@ -277,12 +278,14 @@ void GenerateData::sendPackage()
         ui->label_statusPort_1->setText("Up");
         ui->label_statusPort_1->setStyleSheet("QLabel {font-weight: bold; color : green; }");
         writePort(Package_ch1);
+        correctionFreq();
     }
     if(Package_ch2.size() != 0 && flagRecieve_ch2)
     {
         ui->label_statusPort_3->setText("Up");
         ui->label_statusPort_3->setStyleSheet("QLabel {font-weight: bold; color : green; }");
         writePort(Package_ch2);
+        correctionFreq();
     }
     flagRecieve_ch1 = false;
     flagRecieve_ch2 = false;
@@ -473,4 +476,59 @@ void GenerateData::clear_Log()
 void GenerateData::setShiftFreq(int value)
 {
     shiftFreq = value;
+    correctionFreq();
+}
+//******************************************************************************
+void GenerateData::correctionFreq()
+{
+    if(ui->checkBox_1->checkState())
+    {
+        if(ui->comboBox_speed_1->currentText() == "1,2")
+        {
+           double speed = 13333;
+           correction_Freq = 16000000 / speed;
+           double helper = 16000000 / (speed + shiftFreq);
+           correction_Freq = helper - correction_Freq;
+        }
+        else if(ui->comboBox_speed_1->currentText() == "2,4")
+        {
+            double speed = 6667;
+            correction_Freq = 16000000 / speed;
+            double helper = 16000000 / (speed + shiftFreq);
+            correction_Freq = helper - correction_Freq;
+        }
+        else if(ui->comboBox_speed_1->currentText() == "4,8")
+        {
+            double speed = 3333;
+            correction_Freq = 16000000 / speed;
+            double helper = 16000000 / (speed + shiftFreq);
+            correction_Freq = helper - correction_Freq;
+        }
+        ui->lbl_correction->setText(QString::number(correction_Freq, 'f', 3));
+    }
+    else if(ui->checkBox_2->checkState())
+    {
+        if(ui->comboBox_speed_2->currentText() == "1,2")
+        {
+           double speed = 13333;
+           correction_Freq = 16000000 / speed;
+           double helper = 16000000 / (speed + shiftFreq);
+           correction_Freq = helper - correction_Freq;
+        }
+        else if(ui->comboBox_speed_2->currentText() == "2,4")
+        {
+            double speed = 6667;
+            correction_Freq = 16000000 / speed;
+            double helper = 16000000 / (speed + shiftFreq);
+            correction_Freq = helper - correction_Freq;
+        }
+        else if(ui->comboBox_speed_2->currentText() == "4,8")
+        {
+            double speed = 3333;
+            correction_Freq = 16000000 / speed;
+            double helper = 16000000 / (speed + shiftFreq);
+            correction_Freq = helper - correction_Freq;
+        }
+        ui->lbl_correction->setText(QString::number(correction_Freq, 'f', 3));
+    }
 }

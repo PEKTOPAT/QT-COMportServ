@@ -870,10 +870,10 @@
                 <string/>
                </property>
                <property name="minimum">
-                <number>-1000</number>
+                <number>-255</number>
                </property>
                <property name="maximum">
-                <number>999</number>
+                <number>255</number>
                </property>
               </widget>
              </item>
@@ -887,11 +887,53 @@
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>80</width>
+                 <width>25</width>
                  <height>17</height>
                 </size>
                </property>
               </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_14">
+               <property name="minimumSize">
+                <size>
+                 <width>3</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="lbl_correction">
+               <property name="minimumSize">
+                <size>
+                 <width>40</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>80</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>0.000</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_6">
+               <property name="text">
+                <string>Hz</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
