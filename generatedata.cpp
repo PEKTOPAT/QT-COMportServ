@@ -20,9 +20,9 @@ GenerateData::GenerateData(QWidget *parent) :
     flagRecieve_ch2 = true;
     flagMain = false;
     flagStopReceive = false;
-    sizeInfo_ch1 = 40;
-    sizeInfo_ch2 = 40;
-    sizePackage = 43;
+    sizeInfo_ch1 = 50;
+    sizeInfo_ch2 = 50;
+    sizePackage = 53;
     countByte_CH1 = 0;
     countByte_CH2 = 0;
     shiftFreq = 0;
@@ -136,9 +136,9 @@ void GenerateData::closePort()
         flagRecieve_ch2 = true;
         Package_ch1.clear();
         Package_ch2.clear();
-        sizeInfo_ch1 = 40;
-        sizeInfo_ch2 = 40;
-        sizePackage = 43;
+        sizeInfo_ch1 = 50;
+        sizeInfo_ch2 = 50;
+        sizePackage = 53;
     }
     else return;
 }
@@ -292,16 +292,17 @@ void GenerateData::sendPackage()
     }
     flagRecieve_ch1 = false;
     flagRecieve_ch2 = false;
-    sizeInfo_ch1 = 30;
-    sizeInfo_ch2 = 30;
-    sizePackage = 33;
+    sizeInfo_ch1 = 15;
+    sizeInfo_ch2 = 15;
+    sizePackage = 18;
 }
 //******************************************************************************
 void GenerateData::stopSendPackage()
 {
-    sizeInfo_ch1 = 40;
-    sizeInfo_ch2 = 40;
-    sizePackage = 43;
+
+    sizeInfo_ch1 = 50;
+    sizeInfo_ch2 = 50;
+    sizePackage = 53;
     flagStopReceive = true;
     ui->checkBox_1->setEnabled(true);
     ui->checkBox_2->setEnabled(true);
@@ -331,7 +332,11 @@ void GenerateData::writePort(QByteArray data)
 //******************************************************************************
 void GenerateData::readPort()
 {
-    if(flagStopReceive) return;
+    if(flagStopReceive)
+    {
+        port->clear(QSerialPort::AllDirections);
+        return;
+    }
     QByteArray data;
     QByteArray transit;
     if (port->bytesAvailable() == 0) return;
@@ -353,10 +358,14 @@ void GenerateData::readPort()
         {
             if(strData == "64")
             {
+                flagRecieve_ch1 = true;
+                sendPackage();
                 flagMain = false;
             }
             else if(strData == "65")
             {
+                flagRecieve_ch1 = true;
+                sendPackage();
                 flagMain = false;
             }
             else if(strData == "67")
@@ -371,10 +380,14 @@ void GenerateData::readPort()
             }
             else if(strData == "128")
             {
+                flagRecieve_ch2 = true;
+                sendPackage();
                 flagMain = false;
             }
             else if(strData == "136")
             {
+                flagRecieve_ch2 = true;
+                sendPackage();
                 flagMain = false;
             }
             else if(strData == "152")
@@ -424,15 +437,21 @@ void GenerateData::readPort()
             {
                 flagMain = false;
             }
+            else if(strData == "0")
+            {
+                flagMain = false;
+                debugTextEdit(false, "BufferEmpty");
+                stopSendPackage();
+            }
             else
             {
-                debugTextEdit(false, "Err read data!");
+                debugTextEdit(false, "Err read data!" );
                 flagMain = false;
             }
         }
         else
         {
-            debugTextEdit(false, "Err recieve");
+            debugTextEdit(true, "Waiting to start");
             return;
         }
     }
@@ -460,9 +479,9 @@ void GenerateData::reset_Arduino()
         flagRecieve_ch2 = true;
         Package_ch1.clear();
         Package_ch2.clear();
-        sizeInfo_ch1 = 40;
-        sizeInfo_ch2 = 40;
-        sizePackage = 43;
+        sizeInfo_ch1 = 50;
+        sizeInfo_ch2 = 50;
+        sizePackage = 53;
     }
     else
     {
