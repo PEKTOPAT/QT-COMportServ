@@ -18,3 +18,6 @@ SOURCES += main.cpp\
 HEADERS  += generatedata.h
 
 FORMS    += generatedata.ui
+
+RESOURCES +=
+RC_FILE = server.rc

@@ -20,14 +20,16 @@ GenerateData::GenerateData(QWidget *parent) :
     flagRecieve_ch2 = true;
     flagMain = false;
     flagStopReceive = false;
-    sizeInfo_ch1 = 20;
-    sizeInfo_ch2 = 20;
-    sizePackage = 23;
+    sizeInfo_ch1 = 40;
+    sizeInfo_ch2 = 40;
+    sizePackage = 43;
     countByte_CH1 = 0;
     countByte_CH2 = 0;
     shiftFreq = 0;
     correction_Freq = 0;
-    int num_port = QSerialPortInfo::availablePorts().length();
+    timer_RefrashPort = new QTimer();
+    timer_RefrashPort->start(3000);
+    num_port = QSerialPortInfo::availablePorts().length();
     for(int i = 0; i < num_port; i++)
     {
         ui->comboBox_port->addItem(QSerialPortInfo::availablePorts().at(i).portName());
@@ -68,6 +70,7 @@ GenerateData::GenerateData(QWidget *parent) :
     connect(ui->push_clear_log, SIGNAL(clicked(bool)), this, SLOT(clear_Log()));
     connect(port, SIGNAL(readyRead()), this, SLOT(readPort()));
     connect(ui->spinBox, SIGNAL(valueChanged(int)), this, SLOT(setShiftFreq(int)));
+    connect(timer_RefrashPort, SIGNAL(timeout()), this, SLOT(refrashPort()));
 
 }
 
@@ -133,9 +136,9 @@ void GenerateData::closePort()
         flagRecieve_ch2 = true;
         Package_ch1.clear();
         Package_ch2.clear();
-        sizeInfo_ch1 = 20;
-        sizeInfo_ch2 = 20;
-        sizePackage = 23;
+        sizeInfo_ch1 = 40;
+        sizeInfo_ch2 = 40;
+        sizePackage = 43;
     }
     else return;
 }
@@ -289,16 +292,16 @@ void GenerateData::sendPackage()
     }
     flagRecieve_ch1 = false;
     flagRecieve_ch2 = false;
-    sizeInfo_ch1 = 15;
-    sizeInfo_ch2 = 15;
-    sizePackage = 18;
+    sizeInfo_ch1 = 30;
+    sizeInfo_ch2 = 30;
+    sizePackage = 33;
 }
 //******************************************************************************
 void GenerateData::stopSendPackage()
 {
-    sizeInfo_ch1 = 20;
-    sizeInfo_ch2 = 20;
-    sizePackage = 23;
+    sizeInfo_ch1 = 40;
+    sizeInfo_ch2 = 40;
+    sizePackage = 43;
     flagStopReceive = true;
     ui->checkBox_1->setEnabled(true);
     ui->checkBox_2->setEnabled(true);
@@ -354,12 +357,12 @@ void GenerateData::readPort()
             }
             else if(strData == "65")
             {
-                flagRecieve_ch1 = true;
-                sendPackage();
                 flagMain = false;
             }
             else if(strData == "67")
             {
+                flagRecieve_ch1 = true;
+                sendPackage();
                 flagMain = false;
             }
             else if(strData == "71")
@@ -372,12 +375,12 @@ void GenerateData::readPort()
             }
             else if(strData == "136")
             {
-                flagRecieve_ch2 = true;
-                sendPackage();
                 flagMain = false;
             }
             else if(strData == "152")
             {
+                flagRecieve_ch2 = true;
+                sendPackage();
                 flagMain = false;
             }
             else if(strData == "184")
@@ -457,9 +460,9 @@ void GenerateData::reset_Arduino()
         flagRecieve_ch2 = true;
         Package_ch1.clear();
         Package_ch2.clear();
-        sizeInfo_ch1 = 20;
-        sizeInfo_ch2 = 20;
-        sizePackage = 23;
+        sizeInfo_ch1 = 40;
+        sizeInfo_ch2 = 40;
+        sizePackage = 43;
     }
     else
     {
@@ -485,10 +488,10 @@ void GenerateData::correctionFreq()
     {
         if(ui->comboBox_speed_1->currentText() == "1,2")
         {
-           double speed = 13333;
-           correction_Freq = 16000000 / speed;
-           double helper = 16000000 / (speed + shiftFreq);
-           correction_Freq = helper - correction_Freq;
+            double speed = 13333;
+            correction_Freq = 16000000 / speed;
+            double helper = 16000000 / (speed + shiftFreq);
+            correction_Freq = helper - correction_Freq;
         }
         else if(ui->comboBox_speed_1->currentText() == "2,4")
         {
@@ -510,10 +513,10 @@ void GenerateData::correctionFreq()
     {
         if(ui->comboBox_speed_2->currentText() == "1,2")
         {
-           double speed = 13333;
-           correction_Freq = 16000000 / speed;
-           double helper = 16000000 / (speed + shiftFreq);
-           correction_Freq = helper - correction_Freq;
+            double speed = 13333;
+            correction_Freq = 16000000 / speed;
+            double helper = 16000000 / (speed + shiftFreq);
+            correction_Freq = helper - correction_Freq;
         }
         else if(ui->comboBox_speed_2->currentText() == "2,4")
         {
@@ -530,5 +533,18 @@ void GenerateData::correctionFreq()
             correction_Freq = helper - correction_Freq;
         }
         ui->lbl_correction->setText(QString::number(correction_Freq, 'f', 3));
+    }
+}
+//******************************************************************************
+void GenerateData::refrashPort()
+{
+    if(num_port != (QSerialPortInfo::availablePorts().length()))
+    {
+        num_port = QSerialPortInfo::availablePorts().length();
+        ui->comboBox_port->clear();
+        for(int i = 0; i < num_port; i++)
+        {
+            ui->comboBox_port->addItem(QSerialPortInfo::availablePorts().at(i).portName());
+        }
     }
 }

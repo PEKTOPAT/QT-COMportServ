@@ -5,6 +5,8 @@
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QFile>
+#include <QTime>
+#include <QTimer>
 
 namespace Ui {
 class GenerateData;
@@ -35,6 +37,8 @@ private:
     int sizePackage;
     short shiftFreq;
     double correction_Freq;
+    QTimer *timer_RefrashPort;
+    int num_port;
 
 private slots:
     void openPort();
@@ -51,6 +55,7 @@ private slots:
     void clear_Log();
     void setShiftFreq(int value);
     void correctionFreq();
+    void refrashPort();
 };
 
 #endif // GENERATEDATA_H
