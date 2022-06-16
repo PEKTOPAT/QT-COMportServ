@@ -20,9 +20,9 @@ GenerateData::GenerateData(QWidget *parent) :
     flagRecieve_ch2 = true;
     flagMain = false;
     flagStopReceive = false;
-    sizeInfo_ch1 = 40;
-    sizeInfo_ch2 = 40;
-    sizePackage = 43;
+    sizeInfo_ch1 = 20;
+    sizeInfo_ch2 = 20;
+    sizePackage = 23;
     countByte_CH1 = 0;
     countByte_CH2 = 0;
     shiftFreq = 0;
@@ -136,9 +136,9 @@ void GenerateData::closePort()
         flagRecieve_ch2 = true;
         Package_ch1.clear();
         Package_ch2.clear();
-        sizeInfo_ch1 = 40;
-        sizeInfo_ch2 = 40;
-        sizePackage = 43;
+        sizeInfo_ch1 = 20;
+        sizeInfo_ch2 = 20;
+        sizePackage = 23;
     }
     else return;
 }
@@ -292,16 +292,16 @@ void GenerateData::sendPackage()
     }
     flagRecieve_ch1 = false;
     flagRecieve_ch2 = false;
-    sizeInfo_ch1 = 30;
-    sizeInfo_ch2 = 30;
-    sizePackage = 33;
+    sizeInfo_ch1 = 15;
+    sizeInfo_ch2 = 15;
+    sizePackage = 18;
 }
 //******************************************************************************
 void GenerateData::stopSendPackage()
 {
-    sizeInfo_ch1 = 40;
-    sizeInfo_ch2 = 40;
-    sizePackage = 43;
+    sizeInfo_ch1 = 20;
+    sizeInfo_ch2 = 20;
+    sizePackage = 23;
     flagStopReceive = true;
     ui->checkBox_1->setEnabled(true);
     ui->checkBox_2->setEnabled(true);
@@ -357,12 +357,12 @@ void GenerateData::readPort()
             }
             else if(strData == "65")
             {
+                flagRecieve_ch1 = true;
+                sendPackage();
                 flagMain = false;
             }
             else if(strData == "67")
             {
-                flagRecieve_ch1 = true;
-                sendPackage();
                 flagMain = false;
             }
             else if(strData == "71")
@@ -375,12 +375,12 @@ void GenerateData::readPort()
             }
             else if(strData == "136")
             {
+                flagRecieve_ch2 = true;
+                sendPackage();
                 flagMain = false;
             }
             else if(strData == "152")
             {
-                flagRecieve_ch2 = true;
-                sendPackage();
                 flagMain = false;
             }
             else if(strData == "184")
@@ -460,9 +460,9 @@ void GenerateData::reset_Arduino()
         flagRecieve_ch2 = true;
         Package_ch1.clear();
         Package_ch2.clear();
-        sizeInfo_ch1 = 40;
-        sizeInfo_ch2 = 40;
-        sizePackage = 43;
+        sizeInfo_ch1 = 20;
+        sizeInfo_ch2 = 20;
+        sizePackage = 23;
     }
     else
     {
