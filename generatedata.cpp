@@ -299,7 +299,6 @@ void GenerateData::sendPackage()
 //******************************************************************************
 void GenerateData::stopSendPackage()
 {
-
     sizeInfo_ch1 = 50;
     sizeInfo_ch2 = 50;
     sizePackage = 53;
@@ -370,8 +369,6 @@ void GenerateData::readPort()
             }
             else if(strData == "67")
             {
-                flagRecieve_ch1 = true;
-                sendPackage();
                 flagMain = false;
             }
             else if(strData == "71")
@@ -392,8 +389,6 @@ void GenerateData::readPort()
             }
             else if(strData == "152")
             {
-                flagRecieve_ch2 = true;
-                sendPackage();
                 flagMain = false;
             }
             else if(strData == "184")
