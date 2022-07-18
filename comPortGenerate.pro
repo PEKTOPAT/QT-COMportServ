@@ -13,9 +13,11 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        generatedata.cpp
+        generatedata.cpp \
+    threads.cpp
 
-HEADERS  += generatedata.h
+HEADERS  += generatedata.h \
+    threads.h
 
 FORMS    += generatedata.ui
 

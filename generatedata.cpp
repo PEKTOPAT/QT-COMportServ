@@ -7,7 +7,6 @@
 #include <QMessageBox>
 
 //******************************************************************************
-
 GenerateData::GenerateData(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::GenerateData)
@@ -30,11 +29,16 @@ GenerateData::GenerateData(QWidget *parent) :
     timer_RefrashPort = new QTimer();
     timer_RefrashPort->start(3000);
     num_port = QSerialPortInfo::availablePorts().length();
+    myThread = new Threads();
+    myThread->start();
+    for (int i = 0; i <= 100; i++ ) {
+            qDebug() << "+++" << i * 10;
+        }
     for(int i = 0; i < num_port; i++)
     {
         ui->comboBox_port->addItem(QSerialPortInfo::availablePorts().at(i).portName());
     }
-    port = new QSerialPort(this);
+    //port = new QSerialPort(this);
     //    ui->comboBox_portSpeed->addItem("9600");
     //    ui->comboBox_portSpeed->addItem("19200");
     //    ui->comboBox_portSpeed->addItem("38400");
@@ -52,11 +56,11 @@ GenerateData::GenerateData(QWidget *parent) :
     ui->label_statusPort_3->setText("Down");
     ui->label_statusPort_3->setStyleSheet("QLabel {font-weight: bold; color : red; }");
 
-    port->setDataBits(QSerialPort::Data8);
-    port->setFlowControl(QSerialPort::NoFlowControl);
-    port->setParity(QSerialPort::NoParity);
-    port->setStopBits(QSerialPort::OneStop);
-    port->setBaudRate(QSerialPort::Baud115200);
+//    port->setDataBits(QSerialPort::Data8);
+//    port->setFlowControl(QSerialPort::NoFlowControl);
+//    port->setParity(QSerialPort::NoParity);
+//    port->setStopBits(QSerialPort::OneStop);
+//    port->setBaudRate(QSerialPort::Baud115200);
     //**********
     //connecting
     //**********
@@ -68,7 +72,7 @@ GenerateData::GenerateData(QWidget *parent) :
     connect(ui->push_start_send, SIGNAL(clicked(bool)), this, SLOT(sendPackage()));
     connect(ui->push_stop_send, SIGNAL(clicked(bool)), this, SLOT(stopSendPackage()));
     connect(ui->push_clear_log, SIGNAL(clicked(bool)), this, SLOT(clear_Log()));
-    connect(port, SIGNAL(readyRead()), this, SLOT(readPort()));
+    //connect(port, SIGNAL(readyRead()), this, SLOT(readPort()));
     connect(ui->spinBox, SIGNAL(valueChanged(int)), this, SLOT(setShiftFreq(int)));
     connect(timer_RefrashPort, SIGNAL(timeout()), this, SLOT(refrashPort()));
 
@@ -83,21 +87,21 @@ GenerateData::~GenerateData()
 //******************************************************************************
 void GenerateData::setRate_slot(int rate)
 {
-    if(rate == 0) port->setBaudRate(QSerialPort::Baud9600);
-    else if (rate == 1) port->setBaudRate(QSerialPort::Baud19200);
-    else if (rate == 2) port->setBaudRate(QSerialPort::Baud38400);
-    else if (rate == 3) port->setBaudRate(QSerialPort::Baud57600);
-    else if (rate == 4) port->setBaudRate(QSerialPort::Baud115200);
+    if(rate == 0)  myThread->port->setBaudRate(QSerialPort::Baud9600);
+    else if (rate == 1) myThread->port->setBaudRate(QSerialPort::Baud19200);
+    else if (rate == 2) myThread->port->setBaudRate(QSerialPort::Baud38400);
+    else if (rate == 3) myThread->port->setBaudRate(QSerialPort::Baud57600);
+    else if (rate == 4) myThread->port->setBaudRate(QSerialPort::Baud115200);
 }
 //******************************************************************************
 void GenerateData::openPort()
 {
-    if(!port) return;
-    if(port->isOpen()) port->close();
+    if(!myThread->port) return;
+    if(myThread->port->isOpen()) myThread->port->close();
 
-    port->setPortName(ui->comboBox_port->currentText());
-    port->open(QIODevice::ReadWrite);
-    if(port->isOpen())
+    myThread->port->setPortName(ui->comboBox_port->currentText());
+    myThread->port->open(QIODevice::ReadWrite);
+    if(myThread->port->isOpen())
     {
         debugTextEdit(true, "Connected");
         ui->label_status->setText("Connected");
@@ -113,11 +117,11 @@ void GenerateData::openPort()
 //******************************************************************************
 void GenerateData::closePort()
 {
-    if (! port) return;
-    if(port->isOpen())
+    if (! myThread->port) return;
+    if(myThread->port->isOpen())
     {
 
-        port->close();
+        myThread->port->close();
         debugTextEdit(true, "Disconnected");
         ui->label_status->setText("Disconnected");
         ui->label_status->setStyleSheet("QLabel {font-weight: bold; color : red; }");
@@ -326,20 +330,20 @@ void GenerateData::debugTextEdit(bool status, QString debMSG)
 //******************************************************************************
 void GenerateData::writePort(QByteArray data)
 {
-    port->write(data);
+    myThread->port->write(data);
 }
 //******************************************************************************
 void GenerateData::readPort()
 {
     if(flagStopReceive)
     {
-        port->clear(QSerialPort::AllDirections);
+        myThread->port->clear(QSerialPort::AllDirections);
         return;
     }
     QByteArray data;
     QByteArray transit;
-    if (port->bytesAvailable() == 0) return;
-    data = port->readAll();
+    if (myThread->port->bytesAvailable() == 0) return;
+    data = myThread->port->readAll();
     for(int i = 0; i < data.size(); i++)
     {
         transit.clear();
@@ -457,7 +461,7 @@ void GenerateData::reset_Arduino()
 {
     QByteArray msg;
     msg.append(170);
-    if(port->isOpen())
+    if(myThread->port->isOpen())
     {
         writePort(msg);
         debugTextEdit(true, "Reset arduino");

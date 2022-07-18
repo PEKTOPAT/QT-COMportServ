@@ -7,6 +7,8 @@
 #include <QFile>
 #include <QTime>
 #include <QTimer>
+#include "threads.h"
+
 
 namespace Ui {
 class GenerateData;
@@ -39,6 +41,8 @@ private:
     double correction_Freq;
     QTimer *timer_RefrashPort;
     int num_port;
+    Threads *myThread;
+
 
 private slots:
     void openPort();
@@ -46,7 +50,7 @@ private slots:
     void setRate_slot(int rate);
     void reset_Arduino();
     void writePort(QByteArray data);
-    void readPort();
+
     void debugTextEdit(bool status, QString debMSG);
     void openPatternFile();
     void generatePackage();
@@ -56,6 +60,9 @@ private slots:
     void setShiftFreq(int value);
     void correctionFreq();
     void refrashPort();
+
+    public slots:
+    void readPort();
 };
 
 #endif // GENERATEDATA_H
